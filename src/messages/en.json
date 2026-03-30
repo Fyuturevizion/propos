@@ -1,0 +1,167 @@
+{
+  "common": {
+    "search": "Search",
+    "filter": "Filter",
+    "contact": "Contact",
+    "viewDetails": "View Details",
+    "bookViewing": "Book a Viewing",
+    "language": "Language",
+    "english": "English",
+    "thai": "ไทย",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back"
+  },
+  "home": {
+    "hero": {
+      "title": "Find Your Dream Property in Phuket",
+      "subtitle": "Villas, condos, and land — with expert local guidance"
+    },
+    "cta": "Browse Properties",
+    "areas": "Explore Phuket Areas",
+    "whyUs": {
+      "title": "Why PropOS",
+      "local": "Deep local expertise across all Phuket districts",
+      "bilingual": "Full bilingual support in English and Thai",
+      "ai": "AI-powered property matching and instant responses"
+    }
+  },
+  "properties": {
+    "title": "Properties",
+    "subtitle": "Browse our curated selection of Phuket real estate",
+    "filters": {
+      "type": "Property Type",
+      "area": "Area",
+      "priceRange": "Price Range",
+      "bedrooms": "Bedrooms",
+      "listingType": "Listing Type",
+      "all": "All"
+    },
+    "types": {
+      "villa": "Villa",
+      "condo": "Condo",
+      "land": "Land",
+      "townhouse": "Townhouse",
+      "apartment": "Apartment"
+    },
+    "listing": {
+      "sale": "For Sale",
+      "rent": "For Rent",
+      "sale_rent": "Sale / Rent"
+    },
+    "details": {
+      "bedrooms": "Bedrooms",
+      "bathrooms": "Bathrooms",
+      "area": "Area",
+      "landArea": "Land Area",
+      "ownership": "Ownership",
+      "yearBuilt": "Year Built",
+      "features": "Features",
+      "location": "Location",
+      "foreignQuota": "Foreign Quota Available"
+    }
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Ready to find your perfect property? Let's talk.",
+    "form": {
+      "name": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "message": "Message",
+      "propertyType": "Interested in",
+      "budget": "Budget Range",
+      "submit": "Send Enquiry",
+      "consent": "I consent to my data being processed in accordance with the Privacy Policy (PDPA)"
+    },
+    "success": "Thank you! We'll be in touch within 24 hours.",
+    "channels": {
+      "title": "Other Ways to Reach Us",
+      "whatsapp": "WhatsApp",
+      "line": "LINE",
+      "telegram": "Telegram",
+      "email": "Email"
+    }
+  },
+  "chat": {
+    "placeholder": "Ask about properties in Phuket...",
+    "greeting": "Hello! I'm your Phuket property assistant. How can I help you today?",
+    "title": "Property Assistant"
+  },
+  "areas": {
+    "title": "Phuket Areas",
+    "subtitle": "Discover the unique character of each Phuket district",
+    "bangtao": "Bang Tao",
+    "surin": "Surin",
+    "rawai": "Rawai",
+    "kamala": "Kamala",
+    "kata": "Kata",
+    "cherngtalay": "Cherng Talay",
+    "sisunthon": "Si Sunthon",
+    "thalang": "Thalang",
+    "patong": "Patong",
+    "karon": "Karon",
+    "naiharn": "Nai Harn",
+    "laguna": "Laguna",
+    "phukettown": "Phuket Town"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "nav": {
+      "overview": "Overview",
+      "inbox": "Inbox",
+      "crm": "CRM",
+      "listings": "Listings",
+      "calendar": "Calendar",
+      "analytics": "Analytics",
+      "social": "Social Media",
+      "settings": "Settings"
+    },
+    "stats": {
+      "totalLeads": "Total Leads",
+      "activeListings": "Active Listings",
+      "viewingsThisWeek": "Viewings This Week",
+      "unreadMessages": "Unread Messages"
+    },
+    "inbox": {
+      "title": "Unified Inbox",
+      "empty": "No messages yet. Conversations from WhatsApp, Telegram, LINE, and website will appear here."
+    },
+    "crm": {
+      "title": "Lead Pipeline",
+      "empty": "No leads yet. New enquiries will automatically appear in your pipeline."
+    },
+    "listings": {
+      "title": "Property Listings",
+      "add": "Add Property",
+      "empty": "No listings yet. Add your first property to get started."
+    },
+    "calendar": {
+      "title": "Calendar",
+      "empty": "No upcoming events. Viewings and meetings will sync from Google Calendar."
+    },
+    "analytics": {
+      "title": "Analytics",
+      "empty": "Analytics data will appear once you have traffic and leads."
+    },
+    "social": {
+      "title": "Social Media",
+      "compose": "Create Post",
+      "empty": "Schedule and publish posts to Facebook, Instagram, TikTok, and LINE OA."
+    },
+    "settings": {
+      "title": "Settings",
+      "sections": {
+        "profile": "Profile",
+        "api": "API Keys",
+        "ai": "AI Configuration",
+        "notifications": "Notifications"
+      }
+    }
+  }
+}

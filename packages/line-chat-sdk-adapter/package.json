@@ -1,0 +1,22 @@
+{
+  "name": "@propos/line-chat-sdk-adapter",
+  "version": "0.1.0",
+  "description": "LINE Messaging API adapter for Vercel Chat SDK — the first open-source LINE adapter for Chat SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "keywords": ["line", "chat-sdk", "vercel", "messaging", "thailand"],
+  "license": "MIT",
+  "dependencies": {
+    "@line/bot-sdk": "^10.2.0"
+  },
+  "peerDependencies": {
+    "ai": ">=4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
