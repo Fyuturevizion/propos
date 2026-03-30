@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 
 export default function CalendarPage() {
@@ -13,9 +14,9 @@ export default function CalendarPage() {
           Connect your Google Calendar in Settings to sync viewings and appointments.
           The AI assistant will manage bookings and send reminders automatically.
         </p>
-        <a href="/dashboard/settings" className="mt-4 text-sm font-medium text-emerald-600 hover:underline">
+        <Link href="/dashboard/settings" className="mt-4 text-sm font-medium text-emerald-600 hover:underline">
           Go to Settings →
-        </a>
+        </Link>
       </div>
     </div>
   );
