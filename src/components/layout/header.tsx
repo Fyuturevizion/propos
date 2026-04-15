@@ -1,7 +1,7 @@
 "use client";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
-import { Building2, Menu, X, Globe } from "lucide-react";
+import { Menu, X, Globe, Building2 } from "lucide-react";
 import { useState } from "react";
 
 export function Header() {
@@ -17,11 +17,16 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2">
-          <Building2 className="h-6 w-6 text-emerald-600" />
-          <span className="text-lg font-bold">PropOS</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold text-sm">
+            T
+          </div>
+          <div className="flex flex-col">
+            <span className="text-lg font-bold leading-tight tracking-tight">TTT Properties</span>
+            <span className="text-[10px] text-muted-foreground leading-none">Phuket Real Estate</span>
+          </div>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">

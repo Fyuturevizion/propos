@@ -4,6 +4,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  devIndicators: false,
   // Allow images from Supabase Storage
   images: {
     remotePatterns: [
@@ -14,6 +16,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Allow Cloudflare tunnel access in dev
+  allowedDevOrigins: [
+    "emerging-excluding-noon-its.trycloudflare.com",
+  ],
 };
 
 export default withNextIntl(nextConfig);

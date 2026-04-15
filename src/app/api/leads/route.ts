@@ -1,23 +1,58 @@
 import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/lib/db/supabase-server";
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const status = searchParams.get("status");
 
-  // TODO: Query leads from database with optional status filter
+  let query = supabase.from("leads").select("*");
+  if (status) query = query.eq("status", status);
 
-  return NextResponse.json([]);
+  const { data: results } = await query
+    .order("created_at", { ascending: true })
+    .limit(50);
+
+  return NextResponse.json(results);
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  try {
+    const body = await req.json();
 
-  // TODO: Create lead in database
-  // 1. Validate body with insertLeadSchema
-  // 2. Check PDPA consent
-  // 3. Insert into leads table
-  // 4. Optionally sync to Notion CRM database
-  // 5. Return created lead
+    if (!body.fullName) {
+      return NextResponse.json(
+        { success: false, error: "Name is required" },
+        { status: 400 }
+      );
+    }
 
-  return NextResponse.json({ success: true, lead: null });
+    const { data: lead, error } = await supabase
+      .from("leads")
+      .insert({
+        full_name: body.fullName,
+        email: body.email || null,
+        phone: body.phone || null,
+        source: body.source || "website",
+        notes: body.message || body.notes || null,
+        pdpa_consent: body.pdpaConsent || false,
+        pdpa_consent_date: body.pdpaConsent ? new Date().toISOString() : null,
+        status: "new",
+        score: "warm",
+        language_preference: body.language || "en",
+        property_type_interest: body.propertyTypeInterest || null,
+        budget_min_thb: body.budgetMin || null,
+        budget_max_thb: body.budgetMax || null,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, lead });
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 400 }
+    );
+  }
 }

@@ -1,21 +1,20 @@
-import { openai } from "@ai-sdk/openai";
 import { createOpenAI } from "@ai-sdk/openai";
 
-// Cloud provider — GPT-4o for client-facing conversations
-export const cloudProvider = openai;
-export const cloudModel = openai("gpt-4o");
-
-// Local provider — Ollama for internal operations
-export const localProvider = createOpenAI({
-  baseURL: process.env.OLLAMA_BASE_URL || "http://localhost:11434/v1",
-  apiKey: "ollama", // Ollama doesn't need a real key
+// LM Studio provider (OpenAI-compatible, local on Mac Mini)
+export const lmStudio = createOpenAI({
+  baseURL: process.env.OPENAI_BASE_URL || "http://localhost:1234/v1",
+  apiKey: "lm-studio",
 });
-export const localModel = localProvider("qwen2.5");
+export const lmStudioModel = lmStudio("qwen3.5-35b-a3b-mlx");
+
+// Cloud provider — GPT-4o (when available)
+const cloudProvider = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+export const cloudModel = cloudProvider("gpt-4o");
 
 // Route to appropriate model based on context
 export function getModel(context: "client" | "internal" = "client") {
-  if (context === "internal" && process.env.OLLAMA_BASE_URL) {
-    return localModel;
-  }
-  return cloudModel;
+  // Use LM Studio by default (always available on Mac Mini)
+  return lmStudioModel;
 }

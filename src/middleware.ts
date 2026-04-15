@@ -1,20 +1,30 @@
+import { type NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
-import { updateSession } from "@/lib/supabase/middleware";
-import { type NextRequest, NextResponse } from "next/server";
 
 const intlMiddleware = createMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Dashboard routes — check auth first
+  // Dashboard routes — check auth
   if (pathname.startsWith("/dashboard")) {
-    const response = await updateSession(request);
-    if (response.status === 307 || response.status === 308) {
-      return response;
+    // Check TG auth cookie first (set by /api/auth/tg-session)
+    const tgUserId = request.cookies.get("tg-auth-user-id")?.value;
+
+    if (tgUserId) {
+      // TG authenticated — rewrite to the same URL to bypass any redirect
+      return NextResponse.rewrite(new URL(pathname, request.url));
     }
-    return response;
+
+    // Login page is always accessible
+    if (pathname === "/dashboard/login") {
+      return NextResponse.next();
+    }
+
+    // All other dashboard routes need Supabase auth
+    const { updateSession } = await import("@/lib/supabase/middleware");
+    return await updateSession(request);
   }
 
   // API routes — skip i18n
@@ -27,5 +37,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/(en|th)/:path*", "/dashboard/:path*"],
+  matcher: ["/", "/(en|th)/:path*", "/dashboard", "/dashboard/:path*"],
 };

@@ -1,5 +1,6 @@
-import type { Property } from "@/lib/db/schema";
 import { PropertyCard } from "./property-card";
+
+type Property = Record<string, any>;
 
 export function PropertyGrid({ properties }: { properties: Property[] }) {
   return (

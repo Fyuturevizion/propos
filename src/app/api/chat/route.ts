@@ -1,20 +1,35 @@
 import { streamText } from "ai";
-import { getModel } from "@/lib/ai";
+import { createOpenAI } from "@ai-sdk/openai";
 import { getSystemPrompt } from "@/lib/ai/system-prompt";
-import { mcpTools } from "@/lib/ai/tools";
 
-export const maxDuration = 30;
+export const maxDuration = 60;
+
+// LM Studio provider — local on Mac Mini
+const lmStudio = createOpenAI({
+  baseURL: process.env.OPENAI_BASE_URL || "http://localhost:1234/v1",
+  apiKey: "lm-studio",
+});
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  const result = streamText({
-    model: getModel("client"),
-    system: getSystemPrompt(),
-    messages,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    tools: mcpTools as any,
-  });
+  const model = lmStudio("qwen3.5-35b-a3b-mlx");
 
-  return result.toTextStreamResponse();
+  try {
+    const result = streamText({
+      model,
+      system: getSystemPrompt(),
+      messages,
+    });
+
+    return result.toTextStreamResponse();
+  } catch (error) {
+    console.error("Chat API error:", error);
+    return new Response(
+      JSON.stringify({
+        error: "I'm having trouble connecting to my brain right now. Please try again in a moment.",
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
 }

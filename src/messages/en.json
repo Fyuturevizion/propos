@@ -24,7 +24,7 @@
     "cta": "Browse Properties",
     "areas": "Explore Phuket Areas",
     "whyUs": {
-      "title": "Why PropOS",
+      "title": "Why TTT Properties",
       "local": "Deep local expertise across all Phuket districts",
       "bilingual": "Full bilingual support in English and Thai",
       "ai": "AI-powered property matching and instant responses"
@@ -89,8 +89,8 @@
   },
   "chat": {
     "placeholder": "Ask about properties in Phuket...",
-    "greeting": "Hello! I'm your Phuket property assistant. How can I help you today?",
-    "title": "Property Assistant"
+    "greeting": "Hello! I'm your PhOS AI agent — here to help with Phuket property questions, listings, and more. What can I do for you?",
+    "title": "PropOS Agent"
   },
   "areas": {
     "title": "Phuket Areas",
