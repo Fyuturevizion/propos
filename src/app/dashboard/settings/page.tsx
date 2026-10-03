@@ -1,4 +1,4 @@
-import { getAgent } from "@/lib/auth";
+import { agentDisplayName, getAgent } from "@/lib/auth";
 import { SignOutButton } from "@/components/dashboard/sign-out-button";
 import { BuildnetTrigger } from "@/components/dashboard/buildnet-trigger";
 import {
@@ -77,11 +77,11 @@ export default async function SettingsPage() {
             <div className="flex items-center gap-4 mb-5">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5">
                 <span className="text-xl font-bold text-primary">
-                  {(agent.fullName || agent.email || "?")[0]?.toUpperCase()}
+                  {agentDisplayName(agent)[0]?.toUpperCase()}
                 </span>
               </div>
               <div>
-                <p className="text-lg font-semibold">{agent.fullName || "Agent"}</p>
+                <p className="text-lg font-semibold">{agentDisplayName(agent)}</p>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="rounded-full border px-2 py-0.5 text-[10px] font-semibold bg-primary/5 text-primary capitalize">
                     {agent.role}
@@ -100,7 +100,7 @@ export default async function SettingsPage() {
                   <span className="text-sm text-muted-foreground">Full Name</span>
                 </div>
                 <span className="text-sm font-medium">
-                  {agent.fullName || "—"}
+                  {agentDisplayName(agent)}
                 </span>
               </div>
 

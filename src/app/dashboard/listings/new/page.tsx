@@ -3,10 +3,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { DriveImageField } from "@/components/dashboard/drive-image-field";
+import {
+  normalizeImageInputs,
+  parseImageLines,
+} from "@/lib/images/google-drive";
 
 export default function NewPropertyPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [imageUrls, setImageUrls] = useState("");
   const [form, setForm] = useState({
     titleEn: "",
     titleTh: "",
@@ -28,11 +34,15 @@ export default function NewPropertyPage() {
 
     const slug = form.titleEn.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + Date.now().toString(36);
 
+    const images = normalizeImageInputs(parseImageLines(imageUrls));
+
     await fetch("/api/properties", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...form,
+        descriptionEn: form.description,
+        images: images.length ? images : null,
         slug,
         priceThb: form.priceThb || null,
         rentalPriceThb: form.rentalPriceThb || null,
@@ -128,6 +138,8 @@ export default function NewPropertyPage() {
             className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
           />
         </div>
+
+        <DriveImageField value={imageUrls} onChange={setImageUrls} />
 
         <div className="flex gap-3">
           <button type="submit" disabled={loading} className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50">
