@@ -5,6 +5,7 @@ import { extractGoogleDriveFolderId } from "./google-drive";
 export function resolveDriveFolderId(): string {
   const brand = getActiveBrand();
   const candidates = [
+    process.env.WNLUXE_DRIVE_PHOTOS_ROOT_ID,
     process.env.WNLUXE_GOOGLE_DRIVE_FOLDER_ID,
     process.env.NEXT_PUBLIC_WNLUXE_GOOGLE_DRIVE_FOLDER_ID,
     brand.googleDriveFolderId,

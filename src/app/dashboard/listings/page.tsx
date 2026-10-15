@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Plus, Building2, MapPin, Bed, Bath, Home, TrendingUp, ImageIcon } from "lucide-react";
 import { SectionExplainer } from "@/components/dashboard/section-explainer";
 import { resolvePropertyImageUrl } from "@/lib/images/resolve";
+import { SheetSyncPanel } from "@/components/dashboard/sheet-sync-panel";
 
 export default async function ListingsPage() {
   const { agent } = await getAgent();
@@ -59,6 +60,8 @@ export default async function ListingsPage() {
           </Link>
         </div>
       </div>
+
+      <SheetSyncPanel />
 
       {/* Quick Stats */}
       <div className="grid gap-4 sm:grid-cols-3 mb-8 animate-stagger">
