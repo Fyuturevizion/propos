@@ -6,6 +6,24 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const nextConfig: NextConfig = {
   output: "standalone",
   devIndicators: false,
+  async headers() {
+    const agenticCache =
+      "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800";
+    return [
+      {
+        source: "/robots.txt",
+        headers: [{ key: "Cache-Control", value: agenticCache }],
+      },
+      {
+        source: "/llms.txt",
+        headers: [{ key: "Cache-Control", value: agenticCache }],
+      },
+      {
+        source: "/sitemap.xml",
+        headers: [{ key: "Cache-Control", value: agenticCache }],
+      },
+    ];
+  },
   // Allow images from Supabase Storage
   images: {
     remotePatterns: [

@@ -1,0 +1,33 @@
+# Allow search and answer engines to cite public pages
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+Content-Signal: search=yes, ai-input=yes, ai-train=no
+
+Sitemap: https://wnluxe.com/sitemap.xml
+Host: wnluxe.com
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
