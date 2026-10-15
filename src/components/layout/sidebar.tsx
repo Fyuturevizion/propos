@@ -25,6 +25,7 @@ const navItems = [
   { href: "/dashboard/inbox", icon: Inbox, label: "Inbox" },
   { href: "/dashboard/crm", icon: Users, label: "CRM" },
   { href: "/dashboard/listings", icon: Building2, label: "Listings" },
+  { href: "/dashboard/inventory", icon: Building2, label: "Inventory" },
   { href: "/dashboard/calendar", icon: CalendarDays, label: "Calendar" },
   { href: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/dashboard/social", icon: Share2, label: "Social" },
