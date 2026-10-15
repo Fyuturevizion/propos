@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { getAgent } from "@/lib/auth";
 import { supabase } from "@/lib/db/supabase-server";
 import Link from "next/link";
-import { Plus, Building2, MapPin, Bed, Bath, ArrowRight, Search, Home, TrendingUp, Eye } from "lucide-react";
+import { Plus, Building2, MapPin, Bed, Bath, Home, TrendingUp, ImageIcon } from "lucide-react";
 import { SectionExplainer } from "@/components/dashboard/section-explainer";
 import { resolvePropertyImageUrl } from "@/lib/images/resolve";
 
@@ -119,7 +119,7 @@ export default async function ListingsPage() {
           { label: "Add all current TTT Properties listings", done: false, note: "Do this via the bot — one property at a time, just describe each one naturally" },
           { label: "Property photos (Google Drive → CDN)", done: true, note: "Paste Drive links or load the WN Luxe folder when adding a property" },
           { label: "Property detail pages (public website)", done: false, note: "Iain will build individual property pages that clients can browse" },
-          { label: "Edit properties in dashboard", done: false, note: "Coming soon — for now tell the bot to update any details" },
+          { label: "Edit listing photos in dashboard", done: true, note: "Listings → Add/Edit photos (Google Drive → CDN)" },
         ]}
       />
 
@@ -161,6 +161,7 @@ export default async function ListingsPage() {
                   <th className="text-right p-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">Price</th>
                   <th className="text-center p-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">Status</th>
                   <th className="text-center p-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">Listing</th>
+                  <th className="text-right p-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">Photos</th>
                 </tr>
               </thead>
               <tbody>
@@ -217,6 +218,15 @@ export default async function ListingsPage() {
                       </td>
                       <td className="p-4 text-center capitalize text-xs font-medium text-muted-foreground">
                         {p.listing_type?.replace("_", "/") || "—"}
+                      </td>
+                      <td className="p-4 text-right">
+                        <Link
+                          href={`/dashboard/listings/${p.id}/edit`}
+                          className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium hover:bg-muted"
+                        >
+                          <ImageIcon className="h-3.5 w-3.5" />
+                          {(p.images as string[] | null)?.length ? "Edit" : "Add"}
+                        </Link>
                       </td>
                     </tr>
                   );
@@ -286,6 +296,13 @@ export default async function ListingsPage() {
                       {p.price_thb ? `฿${Number(p.price_thb).toLocaleString()}` : "TBD"}
                     </span>
                   </div>
+                  <Link
+                    href={`/dashboard/listings/${p.id}/edit`}
+                    className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border py-2 text-xs font-medium hover:bg-muted"
+                  >
+                    <ImageIcon className="h-3.5 w-3.5" />
+                    {(p.images as string[] | null)?.length ? "Edit photos" : "Add Drive photos"}
+                  </Link>
                 </div>
               );
             })}

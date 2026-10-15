@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getGoogleAccessToken } from "@/lib/google/access-token";
-import { getActiveBrand } from "@/lib/brands";
 import { toStoredDriveRef } from "@/lib/images/google-drive";
+import { resolveDriveFolderId } from "@/lib/images/drive-config";
 
 type DriveFile = {
   id: string;
@@ -12,8 +12,7 @@ type DriveFile = {
 
 export async function GET(req: NextRequest) {
   const folderId =
-    req.nextUrl.searchParams.get("folderId") ||
-    getActiveBrand().googleDriveFolderId;
+    req.nextUrl.searchParams.get("folderId") || resolveDriveFolderId();
 
   if (!folderId) {
     return NextResponse.json(

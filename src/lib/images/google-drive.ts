@@ -92,3 +92,29 @@ export function driveFileIdFromStored(value: string): string | null {
   const id = value.slice("gdrive:".length);
   return DRIVE_FILE_ID_RE.test(id) ? id : null;
 }
+
+/** Extract folder id from a Drive folder URL or return the id if already bare */
+export function extractGoogleDriveFolderId(input: string): string | null {
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+
+  if (DRIVE_FILE_ID_RE.test(trimmed) && !trimmed.includes("/")) {
+    return trimmed;
+  }
+
+  try {
+    const url = new URL(trimmed);
+    const pathMatch = url.pathname.match(/\/folders\/([^/?]+)/);
+    if (pathMatch?.[1]) return pathMatch[1];
+    const id = url.searchParams.get("id");
+    if (id) return id;
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+export function storedImagesToPasteLines(images: string[]): string {
+  return images.join("\n");
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FolderOpen, Loader2, ImageIcon } from "lucide-react";
 import {
   normalizeImageInputs,
@@ -23,6 +23,20 @@ export function DriveImageField({
 }: Props) {
   const [loadingFolder, setLoadingFolder] = useState(false);
   const [folderError, setFolderError] = useState<string | null>(null);
+  const [resolvedFolderId, setResolvedFolderId] = useState(folderId ?? "");
+
+  useEffect(() => {
+    if (folderId) {
+      setResolvedFolderId(folderId);
+      return;
+    }
+    fetch("/api/images/drive/config")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.driveFolderId) setResolvedFolderId(data.driveFolderId);
+      })
+      .catch(() => {});
+  }, [folderId]);
 
   const previewRefs = normalizeImageInputs(parseImageLines(value)).slice(0, 6);
 
@@ -30,7 +44,9 @@ export function DriveImageField({
     setLoadingFolder(true);
     setFolderError(null);
     try {
-      const qs = folderId ? `?folderId=${encodeURIComponent(folderId)}` : "";
+      const qs = resolvedFolderId
+        ? `?folderId=${encodeURIComponent(resolvedFolderId)}`
+        : "";
       const res = await fetch(`/api/images/drive/folder${qs}`);
       const data = await res.json();
       if (!res.ok) {
