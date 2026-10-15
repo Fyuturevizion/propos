@@ -1,38 +1,15 @@
 import { getRequestConfig } from "next-intl/server";
 import { routing } from "./routing";
+import { isLocale, type Locale } from "./config";
+import { loadAppMessages } from "@/lib/i18n/brand-messages";
 
 export default getRequestConfig(async ({ requestLocale }) => {
   let locale = await requestLocale;
-  if (!locale || !routing.locales.includes(locale as "en" | "th")) {
+  if (!locale || !isLocale(locale)) {
     locale = routing.defaultLocale;
   }
-  const base = (await import(`../messages/${locale}.json`)).default;
-  let messages = base;
 
-  if (
-    process.env.NEXT_PUBLIC_BRAND_ID === "wnluxe" &&
-    locale === "en"
-  ) {
-    try {
-      const brand = (await import(`../messages/brands/wnluxe.en.json`))
-        .default;
-      messages = {
-        ...base,
-        ...brand,
-        home: {
-          ...base.home,
-          ...brand.home,
-          whyUs: { ...base.home.whyUs, ...brand.home.whyUs },
-          trust: { ...base.home.trust, ...brand.home.trust },
-        },
-        properties: { ...base.properties, ...brand.properties },
-        contact: { ...base.contact, ...brand.contact },
-        areasPage: { ...base.areasPage, ...brand.areasPage },
-      };
-    } catch {
-      // brand overlay optional
-    }
-  }
+  const messages = await loadAppMessages(locale as Locale);
 
   return {
     locale,

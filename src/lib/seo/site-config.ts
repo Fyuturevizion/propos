@@ -25,7 +25,7 @@ export function getPublicSiteConfig(): PublicSiteConfig {
       legalName: "WN Luxe Phuket",
       tagline: "Luxury pool villas in Pasak and Cherng Talay",
       description:
-        "WN Luxe helps buyers and renters find luxury pool villas near Bang Tao and Laguna in Phuket, with clear advice in English and Thai.",
+        "WN Luxe helps buyers and renters find luxury pool villas near Bang Tao and Laguna in Phuket, with clear advice in English, Thai, and Russian.",
       url,
       logoLetter: "W",
       contactEmail: "hello@wnluxe.com",

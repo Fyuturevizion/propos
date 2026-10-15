@@ -24,6 +24,7 @@ ${site.description}
 ## Languages
 - English: ${site.url}/en
 - Thai: ${site.url}/th
+- Russian: ${site.url}/ru
 
 ## What we do
 ${site.name} is a Phuket real estate brand focused on luxury pool villas near Bang Tao, Laguna, Pasak, and Cherng Talay. We publish listing details, location context, and viewing enquiries. We do not provide legal or tax advice in automated answers.

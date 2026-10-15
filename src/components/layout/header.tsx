@@ -1,21 +1,15 @@
 "use client";
-import { useLocale, useTranslations } from "next-intl";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
-import { Menu, X, Globe } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
+import { Menu, X } from "lucide-react";
 import { SiteBrand } from "@/components/layout/site-brand";
+import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { useState } from "react";
 
 export function Header() {
   const t = useTranslations("common");
-  const locale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
+  const tProps = useTranslations("properties");
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const switchLocale = () => {
-    const next = locale === "en" ? "th" : "en";
-    router.replace(pathname, { locale: next });
-  };
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur">
@@ -26,18 +20,12 @@ export function Header() {
 
         <nav className="hidden items-center gap-6 md:flex">
           <Link href="/properties" className="text-sm font-medium hover:text-emerald-600">
-            Properties
+            {tProps("title")}
           </Link>
           <Link href="/contact" className="text-sm font-medium hover:text-emerald-600">
             {t("contact")}
           </Link>
-          <button
-            onClick={switchLocale}
-            className="flex items-center gap-1 rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-muted"
-          >
-            <Globe className="h-3.5 w-3.5" />
-            {locale === "en" ? "ไทย" : "EN"}
-          </button>
+          <LocaleSwitcher />
         </nav>
 
         <button className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -49,15 +37,12 @@ export function Header() {
         <div className="border-t px-6 py-4 md:hidden">
           <nav className="flex flex-col gap-3">
             <Link href="/properties" className="text-sm font-medium" onClick={() => setMobileOpen(false)}>
-              Properties
+              {tProps("title")}
             </Link>
             <Link href="/contact" className="text-sm font-medium" onClick={() => setMobileOpen(false)}>
               {t("contact")}
             </Link>
-            <button onClick={switchLocale} className="flex items-center gap-1 text-sm font-medium">
-              <Globe className="h-3.5 w-3.5" />
-              {locale === "en" ? "ไทย" : "EN"}
-            </button>
+            <LocaleSwitcher />
           </nav>
         </div>
       )}

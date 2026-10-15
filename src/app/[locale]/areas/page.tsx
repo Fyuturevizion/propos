@@ -2,6 +2,12 @@ import { getTranslations } from "next-intl/server";
 import { MapPin, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { AREA_GUIDES } from "@/lib/area-guides";
+import {
+  areaGuideDescription,
+  areaGuideName,
+  areaGuideTagline,
+} from "@/lib/area-guide-locale";
+import { isLocale, type Locale } from "@/i18n/config";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getPublicSiteConfig } from "@/lib/seo/site-config";
@@ -9,7 +15,8 @@ import { getPublicSiteConfig } from "@/lib/seo/site-config";
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props) {
-  const { locale } = await params;
+  const { locale: localeParam } = await params;
+  const locale = (isLocale(localeParam) ? localeParam : "en") as Locale;
   const site = getPublicSiteConfig();
   const t = await getTranslations({ locale, namespace: "areasPage" });
   return buildPageMetadata({
@@ -21,7 +28,8 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function AreasIndexPage({ params }: Props) {
-  const { locale } = await params;
+  const { locale: localeParam } = await params;
+  const locale = (isLocale(localeParam) ? localeParam : "en") as Locale;
   const site = getPublicSiteConfig();
   const t = await getTranslations("areasPage");
 
@@ -36,7 +44,7 @@ export default async function AreasIndexPage({ params }: Props) {
     name: t("title"),
     itemListElement: slugs.map((slug, index) => {
       const guide = AREA_GUIDES[slug];
-      const name = locale === "th" ? guide.name_th : guide.name_en;
+      const name = areaGuideName(guide, locale);
       return {
         "@type": "ListItem",
         position: index + 1,
@@ -59,11 +67,9 @@ export default async function AreasIndexPage({ params }: Props) {
       <ul className="mt-12 grid gap-6 md:grid-cols-2">
         {slugs.map((slug) => {
           const guide = AREA_GUIDES[slug];
-          const name = locale === "th" ? guide.name_th : guide.name_en;
-          const tagline =
-            locale === "th" ? guide.tagline_th : guide.tagline_en;
-          const blurb =
-            locale === "th" ? guide.description_th : guide.description_en;
+          const name = areaGuideName(guide, locale);
+          const tagline = areaGuideTagline(guide, locale);
+          const blurb = areaGuideDescription(guide, locale);
 
           return (
             <li key={slug}>

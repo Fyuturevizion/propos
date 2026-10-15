@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { locales } from "@/i18n/config";
 import { getPublicSiteConfig } from "@/lib/seo/site-config";
 import { AREA_GUIDES } from "@/lib/area-guides";
 import { supabase } from "@/lib/db/supabase-server";
@@ -6,7 +7,6 @@ import { supabase } from "@/lib/db/supabase-server";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = getPublicSiteConfig();
   const base = site.url;
-  const locales = ["en", "th"] as const;
   const now = new Date();
 
   const staticPaths = ["", "/properties", "/contact", "/areas"];

@@ -12,13 +12,21 @@ import {
 } from "@/lib/seo/structured-data";
 import { resolvePropertyImageUrl } from "@/lib/images/resolve";
 import { getPublicSiteConfig } from "@/lib/seo/site-config";
+import { isLocale, type Locale } from "@/i18n/config";
+import {
+  propertyDisplayDescription,
+  propertyDisplayTitle,
+  propertySeoDescription,
+  propertySeoTitle,
+} from "@/lib/i18n/property-copy";
 
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
 
 export async function generateMetadata({ params }: Props) {
-  const { slug, locale } = await params;
+  const { slug, locale: localeParam } = await params;
+  const locale = (isLocale(localeParam) ? localeParam : "en") as Locale;
   const { data: result } = await supabase
     .from("properties")
     .select("*")
@@ -28,17 +36,9 @@ export async function generateMetadata({ params }: Props) {
 
   if (!result) return { title: "Property not found" };
 
-  const title =
-    (locale === "th" && result.seo_title_th) ||
-    result.seo_title_en ||
-    (locale === "th" && result.title_th) ||
-    result.title_en;
-  const description =
-    (locale === "th" && result.seo_description_th) ||
-    result.seo_description_en ||
-    (locale === "th" && result.description_th) ||
-    result.description_en ||
-    `Villa in ${result.area_district || "Phuket"}. View photos, price, and book a viewing.`;
+  const fallbackDesc = `Villa in ${result.area_district || "Phuket"}. View photos, price, and book a viewing.`;
+  const title = propertySeoTitle(result, locale);
+  const description = propertySeoDescription(result, locale, fallbackDesc);
 
   const images = (result.images as string[]) || [];
   const site = getPublicSiteConfig();
@@ -62,7 +62,8 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function PropertyDetailPage({ params }: Props) {
-  const { slug, locale } = await params;
+  const { slug, locale: localeParam } = await params;
+  const locale = (isLocale(localeParam) ? localeParam : "en") as Locale;
 
   const { data: result } = await supabase
     .from("properties")
@@ -74,8 +75,8 @@ export default async function PropertyDetailPage({ params }: Props) {
   const property = result;
   if (!property) notFound();
 
-  const title = locale === "th" && property.title_th ? property.title_th : property.title_en;
-  const description = locale === "th" && property.description_th ? property.description_th : property.description_en;
+  const title = propertyDisplayTitle(property, locale);
+  const description = propertyDisplayDescription(property, locale);
   const images: string[] = (property.images as string[]) || [];
   const features: Record<string, boolean> = (property.features as Record<string, boolean>) || {};
 

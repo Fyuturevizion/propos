@@ -10,7 +10,6 @@ import {
 import { getPublicSiteConfig } from "@/lib/seo/site-config";
 import { HomeFaq } from "@/components/marketing/home-faq";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import wnluxeFaq from "@/messages/brands/wnluxe.en.json";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -25,18 +24,27 @@ export async function generateMetadata({ params }: Props) {
   });
 }
 
-export default async function HomePage() {
+export default async function HomePage({ params }: Props) {
   const t = await getTranslations();
   const site = getPublicSiteConfig();
   const isWnluxe = site.brandId === "wnluxe";
-  const faqJsonLd = isWnluxe
-    ? faqPageJsonLd(
-        wnluxeFaq.home.faq.items.map((item) => ({
-          question: item.q,
-          answer: item.a,
-        }))
-      )
-    : null;
+  let faqJsonLd = null;
+  if (isWnluxe) {
+    try {
+      const faqT = await getTranslations("home.faq");
+      const items = faqT.raw("items") as Array<{ q: string; a: string }>;
+      if (items?.length) {
+        faqJsonLd = faqPageJsonLd(
+          items.map((item) => ({
+            question: item.q,
+            answer: item.a,
+          }))
+        );
+      }
+    } catch {
+      faqJsonLd = null;
+    }
+  }
 
   return (
     <div>

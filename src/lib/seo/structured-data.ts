@@ -25,7 +25,7 @@ export function webSiteJsonLd() {
     name: site.name,
     url: site.url,
     description: site.description,
-    inLanguage: ["en", "th"],
+    inLanguage: ["en", "th", "ru"],
     potentialAction: {
       "@type": "SearchAction",
       target: `${site.url}/en/properties?q={search_term_string}`,

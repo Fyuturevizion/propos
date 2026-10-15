@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { locales, type Locale } from "@/i18n/config";
 import { getPublicSiteConfig } from "./site-config";
+import { localizedPublicPath, localizedPublicUrl } from "./locale-path";
 
 type PageMetaInput = {
   title: string;
@@ -12,10 +14,9 @@ type PageMetaInput = {
 
 export function buildPageMetadata(input: PageMetaInput): Metadata {
   const site = getPublicSiteConfig();
-  const locale = input.locale || "en";
-  const canonicalPath =
-    locale === "en" ? input.path : `/${locale}${input.path === "/" ? "" : input.path}`;
-  const canonical = `${site.url}${canonicalPath === "/" ? "" : canonicalPath}`;
+  const locale = (input.locale || "en") as Locale;
+  const canonicalPath = localizedPublicPath(locale, input.path);
+  const canonical = `${site.url}${canonicalPath}`;
 
   const title =
     input.title.includes(site.name) ? input.title : `${input.title} | ${site.name}`;
@@ -25,10 +26,12 @@ export function buildPageMetadata(input: PageMetaInput): Metadata {
     description: input.description,
     alternates: {
       canonical,
-      languages: {
-        en: `${site.url}${input.path === "/" ? "" : input.path}`,
-        th: `${site.url}/th${input.path === "/" ? "" : input.path}`,
-      },
+      languages: Object.fromEntries(
+        locales.map((code) => [
+          code,
+          localizedPublicUrl(site.url, code, input.path),
+        ])
+      ),
     },
     openGraph: {
       title,
@@ -36,7 +39,12 @@ export function buildPageMetadata(input: PageMetaInput): Metadata {
       url: canonical,
       siteName: site.name,
       type: "website",
-      locale: locale === "th" ? "th_TH" : "en_US",
+      locale:
+        locale === "th"
+          ? "th_TH"
+          : locale === "ru"
+            ? "ru_RU"
+            : "en_US",
       images: input.image ? [{ url: input.image }] : undefined,
     },
     twitter: {

@@ -8,6 +8,7 @@
     "language": "ภาษา",
     "english": "English",
     "thai": "ไทย",
+    "russian": "Русский",
     "loading": "กำลังโหลด...",
     "noResults": "ไม่พบผลลัพธ์",
     "save": "บันทึก",
@@ -123,6 +124,7 @@
     "karon": "กะรน",
     "naiharn": "ในหาน",
     "laguna": "ลากูน่า",
+    "pasak": "ป่าคอก",
     "phukettown": "เมืองภูเก็ต"
   },
   "dashboard": {
