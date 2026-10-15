@@ -47,6 +47,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+### Deploy (WN Luxe production)
+
+Push to **`main`** deploys to Cloudflare Worker **`wnluxe`** via GitHub Actions. Cloud agents merge and push; they do not need Cloudflare tokens locally.
+
+See [docs/DEPLOY.md](docs/DEPLOY.md) for the one-time GitHub secrets checklist.
+
 ### Database Migrations
 
 Using Drizzle Kit:

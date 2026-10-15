@@ -28,6 +28,10 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+
+      - name: Preflight (required GitHub Secrets)
+        run: bash scripts/github-actions-preflight.sh ci
+
       - name: Lint
         run: npm run lint
       - name: Build (OpenNext / Cloudflare)

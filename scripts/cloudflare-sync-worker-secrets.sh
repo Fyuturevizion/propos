@@ -5,6 +5,10 @@ set -euo pipefail
 WORKER_NAME="${WORKER_NAME:-wnluxe}"
 
 if [[ -z "${CLOUDFLARE_API_TOKEN:-}" ]]; then
+  if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+    echo "CLOUDFLARE_API_TOKEN not set in GitHub Actions." >&2
+    exit 1
+  fi
   echo "CLOUDFLARE_API_TOKEN not set; skipping Worker secret sync." >&2
   exit 0
 fi

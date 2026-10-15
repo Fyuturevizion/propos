@@ -12,6 +12,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: read
     env:
@@ -29,6 +30,9 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+
+      - name: Preflight (required GitHub Secrets)
+        run: bash scripts/github-actions-preflight.sh deploy
 
       - name: Sync Worker runtime secrets (from GitHub Secrets)
         run: bash scripts/cloudflare-sync-worker-secrets.sh
