@@ -61,6 +61,15 @@ export default async function ListingsPage() {
         </div>
       </div>
 
+      <div className="mb-4 flex flex-wrap gap-2 text-sm">
+        <Link
+          href="/dashboard/inventory"
+          className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 font-medium hover:bg-muted"
+        >
+          CRM inventory (Excel upload &amp; publish)
+        </Link>
+      </div>
+
       <SheetSyncPanel />
 
       {/* Quick Stats */}
