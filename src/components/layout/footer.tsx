@@ -1,21 +1,16 @@
-import { Building2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import { getPublicSiteConfig } from "@/lib/seo/site-config";
+import { SiteBrand, SiteBrandFooterBlurb } from "@/components/layout/site-brand";
 
 export function Footer() {
+  const site = getPublicSiteConfig();
   return (
     <footer className="border-t bg-slate-50 px-6 py-12">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-8 md:grid-cols-3">
           <div>
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold text-sm">
-                T
-              </div>
-              <span className="text-lg font-bold">TTT Properties</span>
-            </div>
-            <p className="mt-3 max-w-xs text-sm text-muted-foreground">
-              Your trusted Phuket real estate partner. Villas, condos, and land with expert local guidance in English and Thai.
-            </p>
+            <SiteBrand compact />
+            <SiteBrandFooterBlurb />
           </div>
           <div>
             <h3 className="text-sm font-semibold">Quick Links</h3>
@@ -41,7 +36,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-6 text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} TTT Properties. All rights reserved. | PDPA Compliant
+          &copy; {new Date().getFullYear()} {site.legalName}. All rights reserved. PDPA compliant.
         </div>
       </div>
     </footer>

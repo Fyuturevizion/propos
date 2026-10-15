@@ -3,20 +3,45 @@ import { MapPin, Home, TrendingUp, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { supabase } from "@/lib/db/supabase-server";
 import { AREA_GUIDES } from "@/lib/area-guides";
+import {
+  areaGuideDescription,
+  areaGuideName,
+  areaGuideTagline,
+} from "@/lib/area-guide-locale";
+import { isLocale, type Locale } from "@/i18n/config";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd } from "@/lib/seo/structured-data";
 
 type Props = {
   params: Promise<{ area: string; locale: string }>;
 };
 
+export async function generateMetadata({ params }: Props) {
+  const { area, locale: localeParam } = await params;
+  const locale = isLocale(localeParam) ? localeParam : "en";
+  const guide = AREA_GUIDES[area];
+  if (!guide) return {};
+  const name = areaGuideName(guide, locale);
+  const description = areaGuideDescription(guide, locale);
+  return buildPageMetadata({
+    locale,
+    path: `/areas/${area}`,
+    title: `${name} area guide`,
+    description: description.slice(0, 155),
+  });
+}
+
 export default async function AreaGuidePage({ params }: Props) {
-  const { area, locale } = await params;
+  const { area, locale: localeParam } = await params;
+  const locale = (isLocale(localeParam) ? localeParam : "en") as Locale;
   const guide = AREA_GUIDES[area];
 
   if (!guide) notFound();
 
-  const name = locale === "th" ? guide.name_th : guide.name_en;
-  const tagline = locale === "th" ? guide.tagline_th : guide.tagline_en;
-  const description = locale === "th" ? guide.description_th : guide.description_en;
+  const name = areaGuideName(guide, locale);
+  const tagline = areaGuideTagline(guide, locale);
+  const description = areaGuideDescription(guide, locale);
 
   // Count active properties in this area
   const { count: propertyCount } = await supabase
@@ -33,6 +58,13 @@ export default async function AreaGuidePage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/en" },
+          { name: "Areas", path: "/en/properties" },
+          { name, path: `/en/areas/${area}` },
+        ])}
+      />
       <h1 className="text-3xl font-bold">{name}</h1>
       <p className="mt-2 text-lg text-muted-foreground">{tagline}</p>
 

@@ -8,6 +8,7 @@
     "language": "Language",
     "english": "English",
     "thai": "ไทย",
+    "russian": "Русский",
     "loading": "Loading...",
     "noResults": "No results found",
     "save": "Save",
@@ -19,16 +20,32 @@
   "home": {
     "hero": {
       "title": "Find Your Dream Property in Phuket",
-      "subtitle": "Villas, condos, and land — with expert local guidance"
+      "subtitle": "Villas, condos, and land with expert local guidance on the ground in Phuket"
     },
     "cta": "Browse Properties",
     "areas": "Explore Phuket Areas",
     "whyUs": {
       "title": "Why TTT Properties",
+      "localTitle": "Local expertise",
       "local": "Deep local expertise across all Phuket districts",
+      "bilingualTitle": "Bilingual",
       "bilingual": "Full bilingual support in English and Thai",
+      "aiTitle": "AI-powered",
       "ai": "AI-powered property matching and instant responses"
+    },
+    "trust": {
+      "pdpaTitle": "PDPA compliant",
+      "pdpaBody": "Your data is protected under Thai law",
+      "verifiedTitle": "Verified listings",
+      "verifiedBody": "Every property personally inspected",
+      "serviceTitle": "Full service",
+      "serviceBody": "From search to closing and beyond"
     }
+  },
+  "areasPage": {
+    "title": "Phuket area guides",
+    "subtitle": "Neighbourhood notes to help you compare beaches, schools, and villa streets.",
+    "readGuide": "Read the area guide"
   },
   "properties": {
     "title": "Properties",
@@ -89,7 +106,7 @@
   },
   "chat": {
     "placeholder": "Ask about properties in Phuket...",
-    "greeting": "Hello! I'm your PhOS AI agent — here to help with Phuket property questions, listings, and more. What can I do for you?",
+    "greeting": "Hello! I can help with Phuket property questions, listings, and viewings. What are you looking for?",
     "title": "PropOS Agent"
   },
   "areas": {
@@ -101,6 +118,7 @@
     "kamala": "Kamala",
     "kata": "Kata",
     "cherngtalay": "Cherng Talay",
+    "pasak": "Pasak",
     "sisunthon": "Si Sunthon",
     "thalang": "Thalang",
     "patong": "Patong",

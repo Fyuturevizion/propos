@@ -1,6 +1,22 @@
 import { getTranslations } from "next-intl/server";
 import { Mail, MessageCircle } from "lucide-react";
 import { ContactForm } from "@/components/contact/contact-form";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { getPublicSiteConfig } from "@/lib/seo/site-config";
+
+type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props) {
+  const { locale } = await params;
+  const site = getPublicSiteConfig();
+  const t = await getTranslations({ locale, namespace: "contact" });
+  return buildPageMetadata({
+    locale,
+    path: "/contact",
+    title: t("title"),
+    description: t("subtitle"),
+  });
+}
 
 export default async function ContactPage() {
   const t = await getTranslations("contact");

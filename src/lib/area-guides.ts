@@ -1,10 +1,13 @@
 export const AREA_GUIDES: Record<string, {
   name_en: string;
   name_th: string;
+  name_ru?: string;
   tagline_en: string;
   tagline_th: string;
+  tagline_ru?: string;
   description_en: string;
   description_th: string;
+  description_ru?: string;
   highlights: string[];
   avgPriceSqm: string;
   propertyTypes: string[];
@@ -12,12 +15,16 @@ export const AREA_GUIDES: Record<string, {
   bangtao: {
     name_en: "Bang Tao",
     name_th: "บางเทา",
+    name_ru: "Банг Тао",
     tagline_en: "Beachfront luxury meets local charm",
     tagline_th: "หรูหราริมชายหาดผสมผสานเสน่ห์ท้องถิ่น",
+    tagline_ru: "Пляжная роскошь и местный колорит",
     description_en:
       "Bang Tao is one of Phuket's longest beaches, stretching 6km along the west coast. Home to the prestigious Laguna complex, it offers a perfect blend of luxury resort living and authentic Thai village life. The area is popular with expats and investors alike, offering everything from beachfront villas to modern condominiums.",
     description_th:
       "บางเทาเป็นหนึ่งในชายหาดที่ยาวที่สุดของภูเก็ต ยาว 6 กม. ตามแนวชายฝั่งตะวันตก เป็นที่ตั้งของคอมเพล็กซ์ลากูน่าที่มีชื่อเสียง มอบทั้งการพักผ่อนหรูหราและวิถีชีวิตท้องถิ่นแท้ๆ",
+    description_ru:
+      "Банг Тао — один из самых длинных пляжей Пхукета (около 6 км). Здесь находится курортный комплекс Laguna, сочетающий отельный сервис и спокойную тайскую деревню. Популярен у экспатов и инвесторов: от вилл у моря до современных кондоминиумов.",
     highlights: ["Laguna Phuket Resort Complex", "6km Sandy Beach", "Catch Beach Club", "Boat Avenue Shopping", "Blue Tree Water Park"],
     avgPriceSqm: "฿120,000 - ฿250,000",
     propertyTypes: ["villa", "condo"],
@@ -74,15 +81,42 @@ export const AREA_GUIDES: Record<string, {
     avgPriceSqm: "฿100,000 - ฿220,000",
     propertyTypes: ["villa", "condo", "apartment"],
   },
+  pasak: {
+    name_en: "Pasak",
+    name_th: "ป่าคอก",
+    name_ru: "Пасак",
+    tagline_en: "Quiet lanes between Laguna and the hills",
+    tagline_th: "ซอยเงียบระหว่างลากูน่าและเนินเขา",
+    tagline_ru: "Тихие улицы между Лагуной и холмами",
+    description_en:
+      "Pasak sits between Cherng Talay and the interior hills, close to Boat Avenue and Laguna yet calmer than the beach strip. The area suits buyers who want newer pool villas, gated streets, and a short drive to Bang Tao Beach.",
+    description_th:
+      "ป่าคอกอยู่ระหว่างเชิงทะเลกับเนินเขา ใกล้โบทอเวนิวและลากูน่า แต่เงียบกว่าแนวชายหาด เหมาะกับผู้ที่ต้องการวิลล่าสระใหม่ในซอยที่มีระบบรักษาความปลอดภัย",
+    description_ru:
+      "Пасак расположен между Чернг Талаем и холмами, рядом с Boat Avenue и Лагуной, но спокойнее, чем линия пляжа. Подходит тем, кто ищет новые виллы с бассейном в закрытых посёлках и короткой дорогой до Банг Тао.",
+    highlights: [
+      "Near Laguna and Boat Avenue",
+      "Gated villa streets",
+      "Short drive to Bang Tao",
+      "Family-friendly",
+      "The Wynn and similar boutique projects",
+    ],
+    avgPriceSqm: "฿140,000 - ฿320,000",
+    propertyTypes: ["villa", "townhouse"],
+  },
   cherngtalay: {
     name_en: "Cherng Talay",
     name_th: "เชิงทะเล",
+    name_ru: "Чернг Талай",
     tagline_en: "The heart of Phuket's luxury lifestyle",
     tagline_th: "ศูนย์กลางไลฟ์สไตล์หรูของภูเก็ต",
+    tagline_ru: "Сердце премиальной жизни на Пхукете",
     description_en:
       "Cherng Talay is the beating heart of Phuket's luxury lifestyle scene. Home to Boat Avenue, Porto de Phuket, and the iconic Laguna area, it's where upscale living meets tropical paradise. The area boasts world-class dining, shopping, and some of the island's most sought-after properties.",
     description_th:
       "เชิงทะเลเป็นศูนย์กลางไลฟ์สไตล์หรูของภูเก็ต ที่ตั้งของโบทอเวนิว ปอร์โตเดภูเก็ต และพื้นที่ลากูน่า",
+    description_ru:
+      "Чернг Талай — центр премиальной жизни на западном Пхукете: Boat Avenue, Porto de Phuket и знаменитая Лагуна. Рестораны мирового уровня, школы и одни из самых востребованных вилл на острове.",
     highlights: ["Boat Avenue", "Porto de Phuket", "Laguna Golf Course", "HeadStart International School", "Robinson Lifestyle"],
     avgPriceSqm: "฿130,000 - ฿280,000",
     propertyTypes: ["villa", "condo", "townhouse"],
@@ -116,12 +150,16 @@ export const AREA_GUIDES: Record<string, {
   laguna: {
     name_en: "Laguna",
     name_th: "ลากูน่า",
+    name_ru: "Лагуна",
     tagline_en: "Asia's premier integrated resort destination",
     tagline_th: "จุดหมายปลายทางรีสอร์ทแบบครบวงจรอันดับหนึ่งของเอเชีย",
+    tagline_ru: "Крупнейший курортный комплекс региона",
     description_en:
       "Laguna Phuket is an award-winning integrated resort complex spanning 1,000 acres. It features luxury hotels, a championship golf course, a spa, and exclusive residential developments. Properties within Laguna command premium prices and offer resort-style living with world-class amenities and 24/7 security.",
     description_th:
       "ลากูน่าภูเก็ตเป็นคอมเพล็กซ์รีสอร์ทครบวงจรบนพื้นที่ 1,000 ไร่ มีโรงแรมหรู สนามกอล์ฟ สปา และที่อยู่อาศัยพิเศษ",
+    description_ru:
+      "Laguna Phuket — награждённый курорт на около 400 га: отели, поле для гольфа, спа и закрытые резиденции. Жизнь в формате resort с круглосуточной охраной и высоким уровнем сервиса.",
     highlights: ["Banyan Tree Resort", "18-Hole Golf Course", "Laguna Park", "Canal Living", "24/7 Security"],
     avgPriceSqm: "฿150,000 - ฿350,000",
     propertyTypes: ["villa", "condo"],

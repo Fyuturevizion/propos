@@ -3,8 +3,10 @@ export const dynamic = "force-dynamic";
 import { getAgent } from "@/lib/auth";
 import { supabase } from "@/lib/db/supabase-server";
 import Link from "next/link";
-import { Plus, Building2, MapPin, Bed, Bath, ArrowRight, Search, Home, TrendingUp, Eye } from "lucide-react";
+import { Plus, Building2, MapPin, Bed, Bath, Home, TrendingUp, ImageIcon } from "lucide-react";
 import { SectionExplainer } from "@/components/dashboard/section-explainer";
+import { resolvePropertyImageUrl } from "@/lib/images/resolve";
+import { SheetSyncPanel } from "@/components/dashboard/sheet-sync-panel";
 
 export default async function ListingsPage() {
   const { agent } = await getAgent();
@@ -59,6 +61,8 @@ export default async function ListingsPage() {
         </div>
       </div>
 
+      <SheetSyncPanel />
+
       {/* Quick Stats */}
       <div className="grid gap-4 sm:grid-cols-3 mb-8 animate-stagger">
         <div className="relative overflow-hidden rounded-2xl border bg-card p-5 animate-slide-up">
@@ -107,7 +111,7 @@ export default async function ListingsPage() {
         icon="🏠"
         description="All your property listings — villas, condos, apartments, land, townhouses"
         status="working"
-        statusLabel="Working — photos and editing coming soon"
+        statusLabel="Working — Google Drive photos via CDN; editing coming soon"
         steps={[
           "Add a property by telling the bot: \"New villa in Kata, 3 bedrooms, 2 bathrooms, 5.5 million baht, private pool and sea view\"",
           "Or click the green 'Add Property' button above to use a form",
@@ -116,9 +120,9 @@ export default async function ListingsPage() {
         ]}
         requirements={[
           { label: "Add all current TTT Properties listings", done: false, note: "Do this via the bot — one property at a time, just describe each one naturally" },
-          { label: "Property photos", done: false, note: "Coming soon — you'll be able to send photos to the bot for each property" },
+          { label: "Property photos (Google Drive → CDN)", done: true, note: "Paste Drive links or load the WN Luxe folder when adding a property" },
           { label: "Property detail pages (public website)", done: false, note: "Iain will build individual property pages that clients can browse" },
-          { label: "Edit properties in dashboard", done: false, note: "Coming soon — for now tell the bot to update any details" },
+          { label: "Edit listing photos in dashboard", done: true, note: "Listings → Add/Edit photos (Google Drive → CDN)" },
         ]}
       />
 
@@ -160,11 +164,16 @@ export default async function ListingsPage() {
                   <th className="text-right p-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">Price</th>
                   <th className="text-center p-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">Status</th>
                   <th className="text-center p-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">Listing</th>
+                  <th className="text-right p-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">Photos</th>
                 </tr>
               </thead>
               <tbody>
                 {allProperties.map((p, i) => {
                   const status = statusConfig[p.status] || statusConfig.archived;
+                  const thumb = (p.images as string[] | null)?.[0];
+                  const thumbUrl = thumb
+                    ? resolvePropertyImageUrl(thumb, { width: 120 })
+                    : null;
                   return (
                     <tr
                       key={p.id}
@@ -173,8 +182,16 @@ export default async function ListingsPage() {
                     >
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center flex-shrink-0">
-                            <span className="text-sm">{propertyTypeIcons[p.property_type || ""] || "🏠"}</span>
+                          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                            {thumbUrl ? (
+                              <img
+                                src={thumbUrl}
+                                alt=""
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <span className="text-sm">{propertyTypeIcons[p.property_type || ""] || "🏠"}</span>
+                            )}
                           </div>
                           <div className="min-w-0">
                             <p className="font-medium truncate">{p.title_en}</p>
@@ -205,6 +222,15 @@ export default async function ListingsPage() {
                       <td className="p-4 text-center capitalize text-xs font-medium text-muted-foreground">
                         {p.listing_type?.replace("_", "/") || "—"}
                       </td>
+                      <td className="p-4 text-right">
+                        <Link
+                          href={`/dashboard/listings/${p.id}/edit`}
+                          className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium hover:bg-muted"
+                        >
+                          <ImageIcon className="h-3.5 w-3.5" />
+                          {(p.images as string[] | null)?.length ? "Edit" : "Add"}
+                        </Link>
+                      </td>
                     </tr>
                   );
                 })}
@@ -216,6 +242,10 @@ export default async function ListingsPage() {
           <div className="md:hidden space-y-3 animate-stagger">
             {allProperties.map((p, i) => {
               const status = statusConfig[p.status] || statusConfig.archived;
+              const thumb = (p.images as string[] | null)?.[0];
+              const thumbUrl = thumb
+                ? resolvePropertyImageUrl(thumb, { width: 160 })
+                : null;
               return (
                 <div
                   key={p.id}
@@ -224,8 +254,16 @@ export default async function ListingsPage() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center flex-shrink-0">
-                        <span className="text-base">{propertyTypeIcons[p.property_type || ""] || "🏠"}</span>
+                      <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        {thumbUrl ? (
+                          <img
+                            src={thumbUrl}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-base">{propertyTypeIcons[p.property_type || ""] || "🏠"}</span>
+                        )}
                       </div>
                       <div className="min-w-0">
                         <p className="font-medium text-sm truncate">{p.title_en}</p>
@@ -261,6 +299,13 @@ export default async function ListingsPage() {
                       {p.price_thb ? `฿${Number(p.price_thb).toLocaleString()}` : "TBD"}
                     </span>
                   </div>
+                  <Link
+                    href={`/dashboard/listings/${p.id}/edit`}
+                    className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border py-2 text-xs font-medium hover:bg-muted"
+                  >
+                    <ImageIcon className="h-3.5 w-3.5" />
+                    {(p.images as string[] | null)?.length ? "Edit photos" : "Add Drive photos"}
+                  </Link>
                 </div>
               );
             })}

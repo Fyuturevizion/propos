@@ -2,7 +2,7 @@ import { getAgent } from "@/lib/auth";
 
 export default async function WikiPage() {
   const { agent } = await getAgent();
-  const firstName = agent.fullName?.split(" ")[0] || "Admin";
+  const firstName = (agent.full_name || "Admin").split(" ")[0] || "Admin";
 
   return (
     <div className="max-w-3xl mx-auto">

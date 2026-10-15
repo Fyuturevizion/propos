@@ -16,6 +16,12 @@ interface AgentRow {
   updated_at: string;
 }
 
+export function agentDisplayName(
+  agent: { full_name?: string | null; fullName?: string | null; email?: string | null }
+): string {
+  return agent.full_name || agent.fullName || agent.email || "Agent";
+}
+
 export async function getAgent() {
   // Check TG auth cookie first
   const cookieStore = await cookies();

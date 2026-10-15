@@ -1,11 +1,31 @@
 import { Bed, Bath, Maximize, MapPin } from "lucide-react";
+import { Link } from "@/i18n/routing";
+import { resolvePropertyImageUrl } from "@/lib/images/resolve";
 
 type Property = Record<string, any>;
 
 export function PropertyCard({ property }: { property: Property }) {
+  const images = (property.images as string[] | null) ?? [];
+  const cover = images[0]
+    ? resolvePropertyImageUrl(images[0], { width: 800 })
+    : null;
+
+  const href = property.slug ? `/properties/${property.slug}` : "/properties";
+
   return (
-    <div className="group overflow-hidden rounded-xl border transition hover:shadow-lg">
-      <div className="aspect-[4/3] bg-muted" />
+    <Link
+      href={href}
+      className="group block overflow-hidden rounded-xl border transition hover:shadow-lg"
+    >
+      <div className="aspect-[4/3] bg-muted overflow-hidden">
+        {cover ? (
+          <img
+            src={cover}
+            alt=""
+            className="h-full w-full object-cover transition group-hover:scale-[1.02]"
+          />
+        ) : null}
+      </div>
       <div className="p-4">
         <h3 className="font-semibold group-hover:text-emerald-600">{property.title_en}</h3>
         <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
@@ -20,6 +40,6 @@ export function PropertyCard({ property }: { property: Property }) {
           ฿{property.price_thb ? Number(property.price_thb).toLocaleString() : '--'}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

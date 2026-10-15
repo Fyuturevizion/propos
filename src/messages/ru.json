@@ -1,0 +1,185 @@
+{
+  "common": {
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "contact": "Контакты",
+    "viewDetails": "Подробнее",
+    "bookViewing": "Записаться на просмотр",
+    "language": "Язык",
+    "english": "English",
+    "thai": "ไทย",
+    "russian": "Русский",
+    "loading": "Загрузка...",
+    "noResults": "Ничего не найдено",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Изменить",
+    "back": "Назад"
+  },
+  "home": {
+    "hero": {
+      "title": "Найдите дом мечты на Пхукете",
+      "subtitle": "Виллы, кондоминиумы и земля с поддержкой местной команды на Пхукете"
+    },
+    "cta": "Смотреть объекты",
+    "areas": "Районы Пхукета",
+    "whyUs": {
+      "title": "Почему выбирают нас",
+      "localTitle": "Местная экспертиза",
+      "local": "Мы хорошо знаем западное побережье Пхукета",
+      "bilingualTitle": "Несколько языков",
+      "bilingual": "Общение на английском, тайском и русском",
+      "aiTitle": "Быстрые ответы",
+      "ai": "Оперативные ответы по объектам и просмотрам, живой менеджер когда нужен"
+    },
+    "trust": {
+      "pdpaTitle": "Защита данных",
+      "pdpaBody": "Ваши данные обрабатываются по законам Таиланда (PDPA)",
+      "verifiedTitle": "Проверенные объекты",
+      "verifiedBody": "Мы лично осматриваем виллы перед публикацией",
+      "serviceTitle": "Сопровождение",
+      "serviceBody": "От первого просмотра до передачи ключей"
+    }
+  },
+  "areasPage": {
+    "title": "Гиды по районам Пхукета",
+    "subtitle": "Кратко о районах: пляжи, школы и улицы с виллами.",
+    "readGuide": "Читать гид по району"
+  },
+  "properties": {
+    "title": "Объекты",
+    "subtitle": "Подборка недвижимости на Пхукете",
+    "filters": {
+      "type": "Тип",
+      "area": "Район",
+      "priceRange": "Бюджет",
+      "bedrooms": "Спальни",
+      "listingType": "Сделка",
+      "all": "Все"
+    },
+    "types": {
+      "villa": "Вилла",
+      "condo": "Кондо",
+      "land": "Земля",
+      "townhouse": "Таунхаус",
+      "apartment": "Апартаменты"
+    },
+    "listing": {
+      "sale": "Продажа",
+      "rent": "Аренда",
+      "sale_rent": "Продажа / аренда"
+    },
+    "details": {
+      "bedrooms": "Спальни",
+      "bathrooms": "Ванные",
+      "area": "Площадь",
+      "landArea": "Участок",
+      "ownership": "Форма владения",
+      "yearBuilt": "Год постройки",
+      "features": "Особенности",
+      "location": "Локация",
+      "foreignQuota": "Квота для иностранцев"
+    }
+  },
+  "contact": {
+    "title": "Связаться с нами",
+    "subtitle": "Расскажите, что ищете. Ответим в течение рабочего дня.",
+    "form": {
+      "name": "Имя",
+      "email": "Email",
+      "phone": "Телефон",
+      "message": "Сообщение",
+      "propertyType": "Интересует",
+      "budget": "Бюджет",
+      "submit": "Отправить запрос",
+      "consent": "Я согласен на обработку данных в соответствии с политикой конфиденциальности (PDPA)"
+    },
+    "success": "Спасибо! Мы свяжемся с вами в течение 24 часов.",
+    "channels": {
+      "title": "Другие способы связи",
+      "whatsapp": "WhatsApp",
+      "line": "LINE",
+      "telegram": "Telegram",
+      "email": "Email"
+    }
+  },
+  "chat": {
+    "placeholder": "Спросите о недвижимости на Пхукете...",
+    "greeting": "Здравствуйте! Помогу с вопросами по объектам, районам и просмотрам. Что вас интересует?",
+    "title": "Ассистент"
+  },
+  "areas": {
+    "title": "Районы Пхукета",
+    "subtitle": "Характер каждого района западного побережья",
+    "bangtao": "Банг Тао",
+    "surin": "Сурин",
+    "rawai": "Равай",
+    "kamala": "Камала",
+    "kata": "Ката",
+    "cherngtalay": "Чернг Талай",
+    "sisunthon": "Си Сунтон",
+    "thalang": "Тхаланг",
+    "patong": "Патонг",
+    "karon": "Карон",
+    "naiharn": "Най Харн",
+    "laguna": "Лагуна",
+    "phukettown": "Пхукет Таун",
+    "pasak": "Пасак"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "nav": {
+      "overview": "Overview",
+      "inbox": "Inbox",
+      "crm": "CRM",
+      "listings": "Listings",
+      "calendar": "Calendar",
+      "analytics": "Analytics",
+      "social": "Social Media",
+      "settings": "Settings"
+    },
+    "stats": {
+      "totalLeads": "Total Leads",
+      "activeListings": "Active Listings",
+      "viewingsThisWeek": "Viewings This Week",
+      "unreadMessages": "Unread Messages"
+    },
+    "inbox": {
+      "title": "Unified Inbox",
+      "empty": "No messages yet."
+    },
+    "crm": {
+      "title": "Lead Pipeline",
+      "empty": "No leads yet."
+    },
+    "listings": {
+      "title": "Property Listings",
+      "add": "Add Property",
+      "empty": "No listings yet."
+    },
+    "calendar": {
+      "title": "Calendar",
+      "empty": "No upcoming events."
+    },
+    "analytics": {
+      "title": "Analytics",
+      "empty": "Analytics data will appear once you have traffic and leads."
+    },
+    "social": {
+      "title": "Social Media",
+      "compose": "Create Post",
+      "empty": "Schedule and publish posts."
+    },
+    "settings": {
+      "title": "Settings",
+      "sections": {
+        "profile": "Profile",
+        "api": "API Keys",
+        "ai": "AI Configuration",
+        "notifications": "Notifications"
+      }
+    }
+  }
+}
