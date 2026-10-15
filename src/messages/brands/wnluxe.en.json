@@ -1,0 +1,58 @@
+{
+  "home": {
+    "hero": {
+      "title": "Luxury pool villas near Bang Tao and Laguna",
+      "subtitle": "WN Luxe helps you buy or rent in Pasak and Cherng Talay with honest local guidance in English and Thai."
+    },
+    "cta": "View villas",
+    "whyUs": {
+      "title": "Why buyers work with WN Luxe",
+      "localTitle": "On the ground in Pasak",
+      "local": "We know Pasak, Cherng Talay, and the Laguna corridor street by street.",
+      "bilingualTitle": "Plain English or Thai",
+      "bilingual": "You get clear answers in English or Thai, without jargon.",
+      "aiTitle": "Fast replies, real people",
+      "ai": "Quick answers on listings and viewings, with a real person when you need one."
+    },
+    "trust": {
+      "pdpaTitle": "PDPA compliant",
+      "pdpaBody": "We only use your details to answer your enquiry.",
+      "verifiedTitle": "Seen in person",
+      "verifiedBody": "We visit villas before we list them.",
+      "serviceTitle": "End to end help",
+      "serviceBody": "From first viewing through handover, we stay in the loop."
+    },
+    "faq": {
+      "title": "Common questions",
+      "items": [
+        {
+          "q": "Where does WN Luxe focus in Phuket?",
+          "a": "We focus on luxury pool villas around Pasak, Cherng Talay, Bang Tao, and the Laguna area on Phuket's west coast."
+        },
+        {
+          "q": "Can foreigners buy a villa in Phuket?",
+          "a": "Many buyers use leasehold, company structures, or freehold where the title allows it. We explain options for each villa and always recommend independent legal advice before you sign."
+        },
+        {
+          "q": "Do you handle rentals as well as sales?",
+          "a": "Yes. We list long-term and high-end rentals as well as villas for sale. Tell us your budget and move-in date and we shortlist homes that fit."
+        },
+        {
+          "q": "How do I book a viewing?",
+          "a": "Send an enquiry on the listing page or contact us by email. We confirm a time, meet you on site, and follow up with photos or documents if you need them."
+        }
+      ]
+    }
+  },
+  "properties": {
+    "subtitle": "Curated villas and homes in west Phuket, with photos and prices in baht."
+  },
+  "contact": {
+    "subtitle": "Tell us what you are looking for. We reply within one business day."
+  },
+  "areasPage": {
+    "title": "Areas we know well",
+    "subtitle": "Pasak, Cherng Talay, Bang Tao, and Laguna on Phuket's west coast.",
+    "readGuide": "Read the area guide"
+  }
+}

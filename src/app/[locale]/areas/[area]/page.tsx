@@ -3,10 +3,27 @@ import { MapPin, Home, TrendingUp, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { supabase } from "@/lib/db/supabase-server";
 import { AREA_GUIDES } from "@/lib/area-guides";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd } from "@/lib/seo/structured-data";
 
 type Props = {
   params: Promise<{ area: string; locale: string }>;
 };
+
+export async function generateMetadata({ params }: Props) {
+  const { area, locale } = await params;
+  const guide = AREA_GUIDES[area];
+  if (!guide) return {};
+  const name = locale === "th" ? guide.name_th : guide.name_en;
+  const description = locale === "th" ? guide.description_th : guide.description_en;
+  return buildPageMetadata({
+    locale,
+    path: `/areas/${area}`,
+    title: `${name} area guide`,
+    description: description.slice(0, 155),
+  });
+}
 
 export default async function AreaGuidePage({ params }: Props) {
   const { area, locale } = await params;
@@ -33,6 +50,13 @@ export default async function AreaGuidePage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/en" },
+          { name: "Areas", path: "/en/properties" },
+          { name, path: `/en/areas/${area}` },
+        ])}
+      />
       <h1 className="text-3xl font-bold">{name}</h1>
       <p className="mt-2 text-lg text-muted-foreground">{tagline}</p>
 

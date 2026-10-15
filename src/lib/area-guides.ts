@@ -74,6 +74,25 @@ export const AREA_GUIDES: Record<string, {
     avgPriceSqm: "฿100,000 - ฿220,000",
     propertyTypes: ["villa", "condo", "apartment"],
   },
+  pasak: {
+    name_en: "Pasak",
+    name_th: "ป่าคอก",
+    tagline_en: "Quiet lanes between Laguna and the hills",
+    tagline_th: "ซอยเงียบระหว่างลากูน่าและเนินเขา",
+    description_en:
+      "Pasak sits between Cherng Talay and the interior hills, close to Boat Avenue and Laguna yet calmer than the beach strip. The area suits buyers who want newer pool villas, gated streets, and a short drive to Bang Tao Beach.",
+    description_th:
+      "ป่าคอกอยู่ระหว่างเชิงทะเลกับเนินเขา ใกล้โบทอเวนิวและลากูน่า แต่เงียบกว่าแนวชายหาด เหมาะกับผู้ที่ต้องการวิลล่าสระใหม่ในซอยที่มีระบบรักษาความปลอดภัย",
+    highlights: [
+      "Near Laguna and Boat Avenue",
+      "Gated villa streets",
+      "Short drive to Bang Tao",
+      "Family-friendly",
+      "The Wynn and similar boutique projects",
+    ],
+    avgPriceSqm: "฿140,000 - ฿320,000",
+    propertyTypes: ["villa", "townhouse"],
+  },
   cherngtalay: {
     name_en: "Cherng Talay",
     name_th: "เชิงทะเล",

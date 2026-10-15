@@ -2,8 +2,26 @@ import { getTranslations } from "next-intl/server";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { supabase } from "@/lib/db/supabase-server";
 import { PropertyGrid } from "@/components/properties/property-grid";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { getPublicSiteConfig } from "@/lib/seo/site-config";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+type Props = {
+  params: Promise<{ locale: string }>;
+  searchParams: SearchParams;
+};
+
+export async function generateMetadata({ params }: Props) {
+  const { locale } = await params;
+  const site = getPublicSiteConfig();
+  const t = await getTranslations({ locale, namespace: "properties" });
+  return buildPageMetadata({
+    locale,
+    path: "/properties",
+    title: `${t("title")} in Phuket`,
+    description: t("subtitle"),
+  });
+}
 
 export default async function PropertiesPage({
   searchParams,

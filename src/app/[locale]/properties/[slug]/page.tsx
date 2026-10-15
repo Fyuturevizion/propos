@@ -4,10 +4,62 @@ import { Link } from "@/i18n/routing";
 import { supabase } from "@/lib/db/supabase-server";
 import { PropertyGallery } from "@/components/properties/property-gallery";
 import { ContactForm } from "@/components/contact/contact-form";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { JsonLd } from "@/components/seo/json-ld";
+import {
+  breadcrumbJsonLd,
+  realEstateListingJsonLd,
+} from "@/lib/seo/structured-data";
+import { resolvePropertyImageUrl } from "@/lib/images/resolve";
+import { getPublicSiteConfig } from "@/lib/seo/site-config";
 
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
+
+export async function generateMetadata({ params }: Props) {
+  const { slug, locale } = await params;
+  const { data: result } = await supabase
+    .from("properties")
+    .select("*")
+    .eq("slug", slug)
+    .limit(1)
+    .maybeSingle();
+
+  if (!result) return { title: "Property not found" };
+
+  const title =
+    (locale === "th" && result.seo_title_th) ||
+    result.seo_title_en ||
+    (locale === "th" && result.title_th) ||
+    result.title_en;
+  const description =
+    (locale === "th" && result.seo_description_th) ||
+    result.seo_description_en ||
+    (locale === "th" && result.description_th) ||
+    result.description_en ||
+    `Villa in ${result.area_district || "Phuket"}. View photos, price, and book a viewing.`;
+
+  const images = (result.images as string[]) || [];
+  const site = getPublicSiteConfig();
+  const ogPath = images[0]
+    ? resolvePropertyImageUrl(images[0], { width: 1200 })
+    : undefined;
+  const ogImage =
+    ogPath?.startsWith("http")
+      ? ogPath
+      : ogPath
+        ? `${site.url}${ogPath}`
+        : undefined;
+
+  return buildPageMetadata({
+    locale,
+    path: `/properties/${slug}`,
+    title,
+    description: String(description).slice(0, 160),
+    image: ogImage,
+  });
+}
 
 export default async function PropertyDetailPage({ params }: Props) {
   const { slug, locale } = await params;
@@ -32,8 +84,30 @@ export default async function PropertyDetailPage({ params }: Props) {
     return Number(price).toLocaleString();
   };
 
+  const listingLd = realEstateListingJsonLd({
+    title,
+    description: description ? String(description) : null,
+    slug,
+    priceThb: property.price_thb,
+    bedrooms: property.bedrooms,
+    bathrooms: property.bathrooms,
+    areaDistrict: property.area_district,
+    images,
+    listingType: property.listing_type,
+  });
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
+      <JsonLd
+        data={[
+          listingLd,
+          breadcrumbJsonLd([
+            { name: "Home", path: "/en" },
+            { name: "Properties", path: "/en/properties" },
+            { name: title, path: `/en/properties/${slug}` },
+          ]),
+        ]}
+      />
       <Link
         href="/properties"
         className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
