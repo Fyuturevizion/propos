@@ -1,12 +1,14 @@
 # WN Luxe on Cloudflare Workers
 
-Production runs on the **`wnluxe`** Worker in your Cloudflare account (Worker tag `011e834a2c3547d0a1bd8c1622e9c181`).
+Production runs on the **`wnluxe`** Worker (tag `011e834a2c3547d0a1bd8c1622e9c181`).
 
-## How deploys are triggered
+## How deploys are triggered (standard)
 
-1. **Workers Builds (Git)** — push to `main` on `Fyuturevizion/propos` runs build + deploy when Builds is connected to this Worker.
-2. **Manual** — `wrangler deploy` from a machine with Cloudflare auth (what you used before if Builds shows no history).
-3. **Builds API** — `scripts/cloudflare-wnluxe-build.sh` (needs `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`).
+**Push to `main`** → [GitHub Actions Deploy production](.github/workflows/deploy-production.yml) → OpenNext build → `wrangler deploy`.
+
+Agents: see **[docs/DEPLOY.md](./DEPLOY.md)** and **AGENTS.md**. No Cloudflare tokens in the agent VM.
+
+Legacy / optional: Workers Builds API (`scripts/cloudflare-wnluxe-build.sh`) if you prefer Cloudflare-native CI.
 
 ## MCP (Cursor Cloudflare integrations)
 

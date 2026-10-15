@@ -11,7 +11,8 @@
     "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf:audit": "bash scripts/cloudflare-wnluxe-audit.sh",
-    "cf:deploy": "bash scripts/cloudflare-wnluxe-build.sh"
+    "cf:deploy": "bash scripts/cloudflare-wnluxe-build.sh",
+    "agent:deploy": "bash scripts/agent-deploy.sh"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.48",
