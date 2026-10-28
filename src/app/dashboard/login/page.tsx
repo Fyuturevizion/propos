@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { LoginForm } from "@/components/auth/login-form";
+import { getPublicSiteConfig } from "@/lib/seo/site-config";
 
 export default async function LoginPage({
   searchParams,
@@ -8,32 +9,29 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string; tg?: string }>;
 }) {
   const { error, tg } = await searchParams;
+  const site = getPublicSiteConfig();
 
-  // Check for TG auto-login cookie (skip redirect if DB is down)
-  let hasTgAuth = false;
   try {
     const cookieStore = await cookies();
     const tgUserId = cookieStore.get("tg-auth-user-id")?.value;
     if (tgUserId) {
-      hasTgAuth = true;
+      redirect("/dashboard");
     }
   } catch {
-    // Cookie check failed, show login form
+    // show login form
   }
 
   return (
     <div className="standalone-login">
       <div className="login-card">
-        {/* Logo */}
         <div className="login-logo">
-          <div className="login-logo-icon">T</div>
-          <h1 className="login-title">TTT Properties</h1>
+          <div className="login-logo-icon">{site.logoLetter}</div>
+          <h1 className="login-title">{site.name}</h1>
           <p className="login-subtitle">
             {tg ? "Welcome back! Sign in to continue." : "Admin Dashboard"}
           </p>
         </div>
 
-        {/* TG auto-login hint */}
         {tg && (
           <div className="login-tg-hint">
             <span className="login-tg-icon">📱</span>
@@ -41,7 +39,6 @@ export default async function LoginPage({
           </div>
         )}
 
-        {/* Error */}
         {error && (
           <div className="login-error">
             {error === "missing_params" && "Missing login information."}
@@ -53,13 +50,9 @@ export default async function LoginPage({
           </div>
         )}
 
-        {/* Login Form */}
         <LoginForm />
 
-        {/* Footer */}
-        <p className="login-footer">
-          PropOS by TTT Properties · Powered by Hermes
-        </p>
+        <p className="login-footer">{site.name} · Admin</p>
       </div>
 
       <style

@@ -1,0 +1,40 @@
+name: Publish inventory listing
+
+on:
+  workflow_dispatch:
+    inputs:
+      property_ref:
+        description: Inventory ref (e.g. J100). Leave default for first row alphabetically.
+        required: false
+        default: J100
+      sync_only:
+        description: Sync Drive photos only (do not publish)
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Publish via production API
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::Set CRON_SECRET in GitHub Actions (production environment) and sync to Worker on deploy."
+            exit 1
+          fi
+          REF="${{ inputs.property_ref }}"
+          SYNC_ONLY="${{ inputs.sync_only }}"
+          BODY="{\"ref\":\"${REF}\""
+          if [ "$SYNC_ONLY" = "true" ]; then
+            BODY="${BODY},\"syncOnly\":true"
+          fi
+          BODY="${BODY}}"
+          echo "Calling inventory cron publish for ref=${REF} syncOnly=${SYNC_ONLY}"
+          curl -sfS -X POST "https://wnluxe.com/api/inventory/cron/publish" \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d "$BODY"
