@@ -1,31 +1,39 @@
 # Restoring the pre–GitHub-deploy app as `main`
 
-When the rolled-back Worker matches the site you want:
+## Current production state
 
-## 1. Confirm production
+- **wnluxe.com** runs Worker version `8d4b9c02-9a1e-4ae4-8360-a9b5c791a3c2` (rolled back 2026-10-28 17:03 UTC).
+- Its code is the manual `wrangler deploy` of **2026-10-03 06:53 UTC** (version `a0da96c1-7382-4249-b461-5401934b828f`, author iainmckie.ia@gmail.com), plus dashboard secret edits from 2026-10-28.
+- `DEPLOY_FREEZE` in the repo root stops **Deploy production** from overwriting it. Delete the file to resume deploys.
 
-- Open https://wnluxe.com and the admin paths you remember (inventory, login).
-- Compare with screenshots if you have them.
+## Where the source is
 
-## 2. Stop accidental redeploys
+The bundle was built from a local checkout that was never pushed:
 
-Until source is aligned, **do not push to `main`** except `[rollback-worker]` commits.  
-Optional: disable **Deploy production** in GitHub Actions temporarily.
+```
+/Users/iainm/Projects/propos/propos
+```
 
-## 3. Recover source code (required to make rollback “main” in git)
+That build contains routes missing from this repo's history, e.g. `api/inventory/import`, `api/inventory/sync-galleries`, `api/media/signed-url`, `dashboard/listings/[slug]`, and the "Import Google Sheet" inventory UI.
 
-A Cloudflare rollback restores the **compiled Worker bundle**, not this repo’s history. To make that app the real `main`:
+## Push it from the Mac
 
-| Approach | Action |
-|----------|--------|
-| **A. You have the old project** | Push that repo or branch; we point GitHub deploy at it. |
-| **B. Only Cloudflare has it** | In Cloudflare dashboard → **Workers → wnluxe → Versions**, note the version ID that matches. Download/extract if available; otherwise re-implement admin/inventory from the live UI and retire PropOS reskin. |
-| **C. Pin deploy to a version** | Document the version ID; avoid `wrangler deploy` from current `main` until code matches. |
+```bash
+cd ~/Projects/propos/propos   # or ~/Projects/propos if the git root is there
+git status                    # .env* files must NOT be listed
+git checkout -b restore/live-oct3
+git add -A
+git commit -m "Restore app that was live on wnluxe.com (Oct 3 build)"
+git push -u origin restore/live-oct3
+```
 
-## 4. After source is found
+## Then (agent)
 
-1. Replace or merge into `Fyuturevizion/propos` `main`.
-2. Run **Deploy production** once to verify parity.
-3. Re-enable normal pushes to `main`.
+1. Diff `restore/live-oct3` against `main`; carry over only the deploy workflows/scripts (`.github/workflows/*`, `scripts/cloudflare-*`, `scripts/github-actions-preflight.sh`).
+2. Make that branch the new `main`.
+3. Delete `DEPLOY_FREEZE`, deploy, and compare against the rolled-back site.
 
-Agent note: tonight’s GitHub deploys (from ~23:29 Bangkok) replaced an older manual bundle. Multiple rollbacks (`steps=5`–`6`) may be needed to reach it.
+## Tools
+
+- `[rollback-worker before=<ISO time>]` in a `main` commit message → roll back to the newest version before that time (`rollback-worker.yml`).
+- `[inspect-worker version=<id>]` → download that version's bundle as an artifact (`inspect-worker.yml`).
