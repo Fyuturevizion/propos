@@ -1,0 +1,3 @@
+Production is pinned to the Worker version that was live before the first
+GitHub Actions deploy (2026-10-28 16:29 UTC). Pushes to main do not deploy
+while this file exists. See docs/RESTORE-PRE-GITHUB-APP.md.

@@ -14,7 +14,7 @@ jobs:
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'push' &&
-       !contains(github.event.head_commit.message, '[rollback-worker]'))
+       !contains(github.event.head_commit.message, '[rollback-worker'))
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -30,22 +30,38 @@ jobs:
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
     steps:
       - uses: actions/checkout@v4
+
+      # While DEPLOY_FREEZE exists, production stays on the rolled-back Worker version.
+      - name: Deploy freeze check
+        id: freeze
+        run: |
+          if [ -f DEPLOY_FREEZE ]; then
+            echo "::notice::Deploys frozen (DEPLOY_FREEZE present). Production is pinned to a rolled-back Worker version."
+            echo "frozen=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/setup-node@v4
+        if: steps.freeze.outputs.frozen != 'true'
         with:
           node-version: "22"
           cache: npm
       - run: npm ci
+        if: steps.freeze.outputs.frozen != 'true'
 
       - name: Preflight (required GitHub Secrets)
+        if: steps.freeze.outputs.frozen != 'true'
         run: bash scripts/github-actions-preflight.sh deploy
 
       - name: Sync Worker runtime secrets (from GitHub Secrets)
+        if: steps.freeze.outputs.frozen != 'true'
         run: bash scripts/cloudflare-sync-worker-secrets.sh
 
       - name: Build and deploy to Cloudflare Workers (wnluxe)
+        if: steps.freeze.outputs.frozen != 'true'
         run: npm run deploy:cloudflare
 
       - name: Verify discovery endpoints
+        if: steps.freeze.outputs.frozen != 'true'
         run: |
           sleep 15
           for path in /robots.txt /llms.txt /en; do

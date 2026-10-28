@@ -3,10 +3,10 @@ name: Rollback Worker (WN Luxe)
 on:
   workflow_dispatch:
     inputs:
-      steps:
-        description: How many Worker versions to roll back (default 1)
+      before:
+        description: Roll back to the newest Worker version created before this ISO time (UTC). Empty = one step back.
         required: false
-        default: "1"
+        default: ""
   push:
     branches: [main]
 
@@ -14,7 +14,7 @@ jobs:
   rollback:
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      contains(github.event.head_commit.message, '[rollback-worker]')
+      contains(github.event.head_commit.message, '[rollback-worker')
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -22,6 +22,8 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      INPUT_BEFORE: ${{ github.event.inputs.before }}
+      COMMIT_MSG: ${{ github.event.head_commit.message }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,18 +31,30 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+
+      - name: Show Worker versions and deployments
+        run: |
+          npx wrangler versions list --name wnluxe --json > versions.json
+          jq -r '.[] | "\(.metadata.created_on)  \(.id)  source=\(.metadata.source // "")  msg=\(.annotations["workers/message"] // "")"' versions.json | tail -40
+          npx wrangler deployments list --name wnluxe | tail -40
+
       - name: Roll back wnluxe Worker
         run: |
-          STEPS="${{ github.event.inputs.steps }}"
-          if [ -z "$STEPS" ]; then
-            MSG="${{ github.event.head_commit.message }}"
-            if [[ "$MSG" =~ steps=([0-9]+) ]]; then
-              STEPS="${BASH_REMATCH[1]}"
-            else
-              STEPS=1
-            fi
+          BEFORE="$INPUT_BEFORE"
+          if [ -z "$BEFORE" ] && [[ "$COMMIT_MSG" =~ before=([0-9T:Z.-]+) ]]; then
+            BEFORE="${BASH_REMATCH[1]}"
           fi
-          echo "Rolling back ${STEPS} version(s) on Worker wnluxe"
-          for i in $(seq 1 "$STEPS"); do
-            npx wrangler rollback --name wnluxe --yes
-          done
+          if [ -z "$BEFORE" ]; then
+            npx wrangler rollback --name wnluxe --yes --message "rollback one step"
+            exit 0
+          fi
+          TARGET=$(jq -r --arg before "$BEFORE" '
+            [ .[] | select(.metadata.created_on < $before) ]
+            | sort_by(.metadata.created_on) | last | .id // empty' versions.json)
+          if [ -z "$TARGET" ]; then
+            echo "::error::No Worker version found before ${BEFORE}"
+            exit 1
+          fi
+          echo "Rolling back to version ${TARGET} (newest before ${BEFORE})"
+          jq -r --arg id "$TARGET" '.[] | select(.id == $id)' versions.json
+          npx wrangler rollback "$TARGET" --name wnluxe --yes --message "restore pre-GitHub-deploy app (before ${BEFORE})"
