@@ -48,7 +48,26 @@ jobs:
           jq -r 'sort_by(.metadata.created_on) | .[] | "\(.metadata.created_on)  \(.id)  source=\(.metadata.source // "")  author=\(.metadata.author_email // "")  msg=\(.annotations["workers/message"] // "")"' versions.json | tail -60
           npx wrangler deployments list --name wnluxe | tail -20
 
+      # Secret edits create versions from the newest uploaded code, so pick by script etag
+      # to keep a given codebase while taking its most recent secrets.
+      - name: Roll back to newest version running a given script (code=<etag prefix>)
+        if: contains(github.event.head_commit.message, 'code=')
+        run: |
+          [[ "$COMMIT_MSG" =~ code=([0-9a-f]+) ]] && CODE="${BASH_REMATCH[1]}"
+          API="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/scripts/wnluxe/versions"
+          TARGET=""
+          for id in $(jq -r 'sort_by(.metadata.created_on) | reverse | .[].id' versions.json); do
+            etag=$(curl -sfS -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" "${API}/${id}" | jq -r '.result.resources.script.etag')
+            created=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .metadata.created_on' versions.json)
+            echo "${created}  ${id}  etag=${etag:0:12}"
+            if [[ -z "$TARGET" && "$etag" == "$CODE"* ]]; then TARGET="$id"; fi
+          done
+          [ -n "$TARGET" ] || { echo "::error::No version with script etag ${CODE}"; exit 1; }
+          echo "Rolling back to ${TARGET}"
+          npx wrangler rollback "$TARGET" --name wnluxe --yes --message "restore Oct 3 app code (etag ${CODE})"
+
       - name: Roll back wnluxe Worker
+        if: "!contains(github.event.head_commit.message, 'code=')"
         run: |
           BEFORE="$INPUT_BEFORE"
           if [ -z "$BEFORE" ] && [[ "$COMMIT_MSG" =~ before=([0-9T:Z.-]+) ]]; then
