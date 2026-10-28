@@ -52,7 +52,7 @@ export function ContactForm({
   if (status === "sent") {
     return (
       <div className="flex flex-col items-center gap-2 py-6 text-center">
-        <CheckCircle className="h-10 w-10 text-emerald-600" />
+        <CheckCircle className="h-10 w-10 text-primary" />
         <p className="font-medium">{t("success")}</p>
       </div>
     );
@@ -61,7 +61,7 @@ export function ContactForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       {propertyTitle && compact && (
-        <div className="rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+        <div className="rounded-lg bg-secondary px-3 py-2 text-xs text-secondary-foreground">
           Regarding: {propertyTitle}
         </div>
       )}
@@ -113,7 +113,7 @@ export function ContactForm({
       <button
         type="submit"
         disabled={status === "sending"}
-        className="w-full rounded-lg bg-emerald-600 py-3 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+        className="w-full rounded-lg bg-primary py-3 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
       >
         {status === "sending" ? "Sending..." : t("form.submit")}
       </button>

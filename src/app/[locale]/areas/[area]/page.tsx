@@ -70,8 +70,8 @@ export default async function AreaGuidePage({ params }: Props) {
 
       <div className="mt-10 grid gap-8 md:grid-cols-2">
         {/* Hero image placeholder */}
-        <div className="aspect-square rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center">
-          <MapPin className="h-12 w-12 text-emerald-600/50" />
+        <div className="aspect-square rounded-xl bg-gradient-to-br from-secondary to-muted flex items-center justify-center">
+          <MapPin className="h-12 w-12 text-primary/40" />
         </div>
 
         <div className="space-y-6">
@@ -79,14 +79,14 @@ export default async function AreaGuidePage({ params }: Props) {
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-lg border p-6">
               <h3 className="flex items-center gap-2 font-semibold text-sm">
-                <Home className="h-4 w-4 text-emerald-600" /> Properties
+                <Home className="h-4 w-4 text-primary" /> Properties
               </h3>
               <p className="mt-2 text-2xl font-bold">{propertyCount ?? 0}</p>
               <p className="text-xs text-muted-foreground">Active listings</p>
             </div>
             <div className="rounded-lg border p-6">
               <h3 className="flex items-center gap-2 font-semibold text-sm">
-                <TrendingUp className="h-4 w-4 text-emerald-600" /> Avg. Price
+                <TrendingUp className="h-4 w-4 text-primary" /> Avg. Price
               </h3>
               <p className="mt-2 text-lg font-bold">{guide.avgPriceSqm.split(" - ")[0]}</p>
               <p className="text-xs text-muted-foreground">Per sqm</p>
@@ -101,7 +101,7 @@ export default async function AreaGuidePage({ params }: Props) {
             <h3 className="font-semibold mb-2">Highlights</h3>
             <div className="flex flex-wrap gap-2">
               {guide.highlights.map((h) => (
-                <span key={h} className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs text-emerald-700">
+                <span key={h} className="rounded-full bg-secondary border border-primary/15 px-3 py-1 text-xs text-primary/90">
                   {h}
                 </span>
               ))}
@@ -122,7 +122,7 @@ export default async function AreaGuidePage({ params }: Props) {
 
           <Link
             href={`/properties?area=${guide.name_en}`}
-            className="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 py-3 text-sm font-medium text-white hover:bg-emerald-500"
+            className="flex items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
           >
             View Properties in {guide.name_en} <ArrowRight className="h-4 w-4" />
           </Link>
@@ -138,8 +138,8 @@ export default async function AreaGuidePage({ params }: Props) {
               <Link key={p.id} href={`/properties/${p.slug}`} className="group overflow-hidden rounded-xl border transition hover:shadow-lg">
                 <div className="aspect-[4/3] bg-muted" />
                 <div className="p-4">
-                  <h3 className="font-semibold group-hover:text-emerald-600">{p.title_en}</h3>
-                  <p className="mt-1 text-lg font-bold text-emerald-600">
+                  <h3 className="font-semibold group-hover:text-primary">{p.title_en}</h3>
+                  <p className="mt-1 text-lg font-bold text-accent">
                     {p.price_thb ? `฿${Number(p.price_thb).toLocaleString()}` : "Price on request"}
                   </p>
                   {p.bedrooms && (

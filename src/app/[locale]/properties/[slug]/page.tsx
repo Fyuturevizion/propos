@@ -131,32 +131,32 @@ export default async function PropertyDetailPage({ params }: Props) {
           <div className="mt-6 flex flex-wrap gap-6 text-sm">
             {property.bedrooms && (
               <span className="flex items-center gap-2 rounded-lg border px-3 py-2">
-                <Bed className="h-4 w-4 text-emerald-600" /> {property.bedrooms} Bedrooms
+                <Bed className="h-4 w-4 text-primary" /> {property.bedrooms} Bedrooms
               </span>
             )}
             {property.bathrooms && (
               <span className="flex items-center gap-2 rounded-lg border px-3 py-2">
-                <Bath className="h-4 w-4 text-emerald-600" /> {property.bathrooms} Bathrooms
+                <Bath className="h-4 w-4 text-primary" /> {property.bathrooms} Bathrooms
               </span>
             )}
             {property.area_sqm && (
               <span className="flex items-center gap-2 rounded-lg border px-3 py-2">
-                <Maximize className="h-4 w-4 text-emerald-600" /> {property.area_sqm} sqm
+                <Maximize className="h-4 w-4 text-primary" /> {property.area_sqm} sqm
               </span>
             )}
             {property.land_area_sqm && (
               <span className="flex items-center gap-2 rounded-lg border px-3 py-2">
-                <Maximize className="h-4 w-4 text-emerald-600" /> {property.land_area_sqm} sqm land
+                <Maximize className="h-4 w-4 text-primary" /> {property.land_area_sqm} sqm land
               </span>
             )}
             {property.year_built && (
               <span className="flex items-center gap-2 rounded-lg border px-3 py-2">
-                <Calendar className="h-4 w-4 text-emerald-600" /> Built {property.year_built}
+                <Calendar className="h-4 w-4 text-primary" /> Built {property.year_built}
               </span>
             )}
             {property.listing_type && (
               <span className="flex items-center gap-2 rounded-lg border px-3 py-2 capitalize">
-                <Home className="h-4 w-4 text-emerald-600" /> {property.listing_type.replace("_", "/")}
+                <Home className="h-4 w-4 text-primary" /> {property.listing_type.replace("_", "/")}
               </span>
             )}
           </div>
@@ -180,7 +180,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   .filter(([, v]) => v)
                   .map(([key]) => (
                     <span key={key} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Check className="h-4 w-4 text-emerald-600" />
+                      <Check className="h-4 w-4 text-primary" />
                       {key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                     </span>
                   ))}
@@ -224,7 +224,7 @@ export default async function PropertyDetailPage({ params }: Props) {
         <div className="space-y-4">
           <div className="rounded-xl border p-6 sticky top-20">
             {/* Price */}
-            <div className="text-2xl font-bold text-emerald-600">
+            <div className="text-2xl font-bold text-accent">
               {property.price_thb ? `฿${formatPrice(property.price_thb)}` : "Price on request"}
             </div>
             {property.rental_price_thb && (
@@ -237,7 +237,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             {/* CTA buttons */}
             <a
               href="#enquiry"
-              className="mt-6 block w-full rounded-lg bg-emerald-600 py-3 text-center text-sm font-medium text-white hover:bg-emerald-500"
+              className="mt-6 block w-full rounded-lg bg-primary py-3 text-center text-sm font-medium text-primary-foreground hover:opacity-90"
             >
               Book a Viewing
             </a>
