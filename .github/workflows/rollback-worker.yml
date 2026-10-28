@@ -2,6 +2,11 @@ name: Rollback Worker (WN Luxe)
 
 on:
   workflow_dispatch:
+    inputs:
+      steps:
+        description: How many Worker versions to roll back (default 1)
+        required: false
+        default: "1"
   push:
     branches: [main]
 
@@ -24,5 +29,18 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
-      - name: Roll back wnluxe Worker to previous version
-        run: npx wrangler rollback --name wnluxe --yes
+      - name: Roll back wnluxe Worker
+        run: |
+          STEPS="${{ github.event.inputs.steps }}"
+          if [ -z "$STEPS" ]; then
+            MSG="${{ github.event.head_commit.message }}"
+            if [[ "$MSG" =~ steps=([0-9]+) ]]; then
+              STEPS="${BASH_REMATCH[1]}"
+            else
+              STEPS=1
+            fi
+          fi
+          echo "Rolling back ${STEPS} version(s) on Worker wnluxe"
+          for i in $(seq 1 "$STEPS"); do
+            npx wrangler rollback --name wnluxe --yes
+          done
