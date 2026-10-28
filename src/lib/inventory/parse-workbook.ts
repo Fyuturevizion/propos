@@ -6,6 +6,7 @@ import {
   hyperlinkTarget,
   parseBedBathFraction,
   parsePriceThb,
+  photoUrlFromSheetCell,
 } from "./spreadsheet";
 
 const SALE_SHEETS = ["sales", "sale", "for sale"];
@@ -117,7 +118,7 @@ function parseSheet(
       listingType,
       location: col.location >= 0 ? read(col.location).text || null : null,
       projectName: col.project >= 0 ? read(col.project).text || null : null,
-      photoUrl: photo.link ?? (photo.text.startsWith("http") ? photo.text : null),
+      photoUrl: photoUrlFromSheetCell(photo.text, photo.link),
       mapUrl: map.link ?? (map.text.startsWith("http") ? map.text : null),
       priceRaw,
       priceThb: parsePriceThb(priceRaw),

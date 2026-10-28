@@ -48,7 +48,16 @@ export function SheetSyncPanel() {
         <div>
           <p className="font-semibold">Google Sheet → listings</p>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Syncs QUICK SEARCH PROPERTY rows; Photo column = Drive folder name (J070, SV-006…)
+            Live sync from{" "}
+            <a
+              href="https://docs.google.com/spreadsheets/d/1tL7C6X7KGcDnVSIrqrmMT0KXzxmzq0q6kgmoqaSoSPg/edit"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-primary"
+            >
+              Property Listings sheet
+            </a>
+            . Photo column hyperlinks → Drive folders; also updates Inventory CRM.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

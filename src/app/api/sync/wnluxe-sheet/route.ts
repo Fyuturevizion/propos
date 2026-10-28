@@ -1,20 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   syncSheetTab,
+  WNLUXE_PROPERTY_SHEET_ID,
+  WNLUXE_PROPERTY_SHEET_URL,
   WNLUXE_SHEET_TABS,
   type SheetTabConfig,
 } from "@/lib/sync/wnluxe-sheet";
 import { resolveDriveFolderId } from "@/lib/images/drive-config";
+import { isDashboardAuthed } from "@/lib/auth/dashboard-gate";
 
-function authorize(req: NextRequest): boolean {
+async function authorize(req: NextRequest): Promise<boolean> {
   const secret = process.env.CRON_SECRET;
-  if (!secret) return true;
   const header = req.headers.get("authorization");
-  return header === `Bearer ${secret}`;
+  if (secret && header === `Bearer ${secret}`) return true;
+  return isDashboardAuthed();
 }
 
 export async function POST(req: NextRequest) {
-  if (!authorize(req)) {
+  if (!(await authorize(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -44,22 +47,11 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (!photosRoot) {
-    return NextResponse.json(
-      {
-        error:
-          "Set WNLUXE_DRIVE_PHOTOS_ROOT_ID (or WNLUXE_GOOGLE_DRIVE_FOLDER_ID) to the Drive folder that contains photo subfolders named like J070, SV-006, etc.",
-        sheetId: process.env.WNLUXE_SHEET_ID ?? "1tL7C6X7KGcDnVSIrqrmMT0KXzxmzq0q6kgmoqaSoSPg",
-      },
-      { status: 400 }
-    );
-  }
-
   const allResults = [];
   for (const tab of tabs) {
     const results = await syncSheetTab({
       tab,
-      photosRootFolderId: photosRoot,
+      photosRootFolderId: photosRoot || undefined,
       limit: tabName ? limit : limit ? Math.min(limit, 5) : 3,
       onlyRef,
     });
@@ -68,23 +60,24 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     ok: true,
-    photosRootFolderId: photosRoot,
+    sheetUrl: WNLUXE_PROPERTY_SHEET_URL,
+    photosRootFolderId: photosRoot ?? null,
+    photosRootWarning: photosRoot
+      ? null
+      : "WNLUXE_DRIVE_PHOTOS_ROOT_ID not set — folder codes (J100) need it; Drive hyperlinks in Photo column still work.",
     synced: allResults,
   });
 }
 
 export async function GET() {
   return NextResponse.json({
-    sheetId:
-      process.env.WNLUXE_SHEET_ID ??
-      "1tL7C6X7KGcDnVSIrqrmMT0KXzxmzq0q6kgmoqaSoSPg",
-    sheetUrl:
-      "https://docs.google.com/spreadsheets/d/1tL7C6X7KGcDnVSIrqrmMT0KXzxmzq0q6kgmoqaSoSPg/edit",
+    sheetId: WNLUXE_PROPERTY_SHEET_ID,
+    sheetUrl: WNLUXE_PROPERTY_SHEET_URL,
     tabs: WNLUXE_SHEET_TABS.map((t) => t.tabName),
     photosRootConfigured: Boolean(
       resolveDriveFolderId() || process.env.WNLUXE_DRIVE_PHOTOS_ROOT_ID
     ),
     howPhotoColumnWorks:
-      "Photo cell = subfolder name under photos root (e.g. J070), or a Drive folder/file URL",
+      "Photo cells with embedded links use the hyperlink URL (Drive folder). Plain text uses WNLUXE_DRIVE_PHOTOS_ROOT_ID + folder name (e.g. J100).",
   });
 }

@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { parsePropertyListingsWorkbook } from "@/lib/inventory/parse-workbook";
 import { upsertInventoryFromWorkbook } from "@/lib/inventory/upsert-from-workbook";
-
-async function isDashboardAuthed(): Promise<boolean> {
-  const cookieStore = await cookies();
-  if (cookieStore.get("tg-auth-user-id")?.value) return true;
-  const { createClient } = await import("@/lib/supabase/server");
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return Boolean(user);
-}
+import { isDashboardAuthed } from "@/lib/auth/dashboard-gate";
 
 export async function POST(req: NextRequest) {
   if (!(await isDashboardAuthed())) {

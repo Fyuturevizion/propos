@@ -44,6 +44,19 @@ export function hyperlinkTarget(
   return target?.trim() ? target.trim() : null;
 }
 
+/** Value stored on inventory_listings.photo_url for Drive sync (link, URL, or folder code). */
+export function photoUrlFromSheetCell(
+  text: string,
+  hyperlink: string | null
+): string | null {
+  const t = text.trim();
+  const link = hyperlink?.trim();
+  if (link) return link;
+  if (t.startsWith("http")) return t;
+  if (t && t !== "-" && t.toLowerCase() !== "tbc") return t;
+  return null;
+}
+
 export function parseBedBathFraction(raw: string): {
   bedrooms: number | null;
   bathrooms: number | null;
