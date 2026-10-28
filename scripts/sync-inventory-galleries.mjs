@@ -4,9 +4,25 @@
 // Mirrors syncInventoryGalleryRow in the production app so the dashboard reads the same shape.
 // Usage: node scripts/sync-inventory-galleries.mjs [REF ...]   (no refs = every row with a photo_url)
 
-const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").replace(/\/$/, "");
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN } = process.env;
+const env = (name) => (process.env[name] ?? "").trim();
+const SUPABASE_URL = env("NEXT_PUBLIC_SUPABASE_URL").replace(/\/$/, "");
+const SERVICE_KEY = env("SUPABASE_SERVICE_ROLE_KEY");
+const GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID");
+const GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET");
+const GOOGLE_REFRESH_TOKEN = env("GOOGLE_REFRESH_TOKEN");
+
+// Non-secret fingerprints so a client/token mismatch is visible in CI logs.
+for (const name of ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REFRESH_TOKEN"]) {
+  const raw = process.env[name] ?? "";
+  const v = raw.trim();
+  const shape =
+    name === "GOOGLE_CLIENT_ID"
+      ? `project=${v.split("-")[0]} endsWithGoogleDomain=${v.endsWith(".apps.googleusercontent.com")}`
+      : name === "GOOGLE_CLIENT_SECRET"
+        ? `startsWithGOCSPX=${v.startsWith("GOCSPX-")}`
+        : `startsWith1slashslash=${v.startsWith("1//")}`;
+  console.log(`${name}: length=${v.length} hadWhitespace=${raw !== v} ${shape}`);
+}
 const BUCKET = "property-images";
 
 for (const [k, v] of Object.entries({
