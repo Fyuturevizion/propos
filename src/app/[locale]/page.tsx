@@ -1,61 +1,14 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { Globe, Bot, MapPin, Building2, Shield, Star } from "lucide-react";
-import { JsonLd } from "@/components/seo/json-ld";
-import {
-  organizationJsonLd,
-  webSiteJsonLd,
-  faqPageJsonLd,
-} from "@/lib/seo/structured-data";
 import { getPublicSiteConfig } from "@/lib/seo/site-config";
-import { HomeFaq } from "@/components/marketing/home-faq";
-import { buildPageMetadata } from "@/lib/seo/metadata";
 
-type Props = { params: Promise<{ locale: string }> };
-
-export async function generateMetadata({ params }: Props) {
-  const { locale } = await params;
-  const site = getPublicSiteConfig();
-  return buildPageMetadata({
-    locale,
-    path: "/",
-    title: site.name,
-    description: site.description,
-  });
-}
-
-export default async function HomePage({ params }: Props) {
+export default async function HomePage() {
   const t = await getTranslations();
   const site = getPublicSiteConfig();
-  const isWnluxe = site.brandId === "wnluxe";
-  let faqJsonLd = null;
-  if (isWnluxe) {
-    try {
-      const faqT = await getTranslations("home.faq");
-      const items = faqT.raw("items") as Array<{ q: string; a: string }>;
-      if (items?.length) {
-        faqJsonLd = faqPageJsonLd(
-          items.map((item) => ({
-            question: item.q,
-            answer: item.a,
-          }))
-        );
-      }
-    } catch {
-      faqJsonLd = null;
-    }
-  }
 
   return (
     <div>
-      <JsonLd
-        data={
-          faqJsonLd
-            ? [organizationJsonLd(), webSiteJsonLd(), faqJsonLd]
-            : [organizationJsonLd(), webSiteJsonLd()]
-        }
-      />
-      {/* Hero */}
       <section className="relative bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900 px-6 py-24 text-white md:py-32">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <div className="relative mx-auto max-w-5xl text-center">
@@ -108,32 +61,26 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      {/* Areas preview */}
       <section className="bg-slate-50 px-6 py-20">
         <div className="mx-auto max-w-5xl text-center">
           <h2 className="text-3xl font-bold">{t("home.areas")}</h2>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            {(isWnluxe
+            {(site.primaryAreas.length
               ? site.primaryAreas
               : ["bangtao", "surin", "rawai", "kamala", "kata", "cherngtalay", "patong", "naiharn", "laguna"]
-            ).map(
-              (area) => (
-                <Link
-                  key={area}
-                  href={`/areas/${area}`}
-                  className="rounded-full border bg-white px-4 py-2 text-sm font-medium transition hover:bg-emerald-50 hover:border-emerald-300"
-                >
-                  {t(`areas.${area}`)}
-                </Link>
-              )
-            )}
+            ).map((area) => (
+              <Link
+                key={area}
+                href={`/areas/${area}`}
+                className="rounded-full border bg-white px-4 py-2 text-sm font-medium transition hover:bg-emerald-50 hover:border-emerald-300"
+              >
+                {t(`areas.${area}`)}
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      {isWnluxe && <HomeFaq />}
-
-      {/* Trust signals */}
       <section className="px-6 py-16">
         <div className="mx-auto max-w-5xl grid gap-6 md:grid-cols-3">
           <div className="flex items-center gap-3 rounded-lg border p-4">

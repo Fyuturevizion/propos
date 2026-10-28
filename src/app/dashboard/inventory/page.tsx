@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { getAgent } from "@/lib/auth";
 import { supabase } from "@/lib/db/supabase-server";
 import { InventoryListingsBoard } from "@/components/dashboard/inventory-listings-board";
+import { SheetSyncPanel } from "@/components/dashboard/sheet-sync-panel";
 import { slugFromPropertyRef } from "@/lib/inventory/spreadsheet";
 
 export default async function InventoryPage() {
@@ -46,11 +47,12 @@ export default async function InventoryPage() {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight">CRM Inventory</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Property inventory</h1>
         <p className="text-muted-foreground mt-1">
-          Import spreadsheet rows, sync Google Drive photos, and publish to the public site.
+          Master CRM from your spreadsheet — import, sync Drive photos, publish to the site.
         </p>
       </div>
+      <SheetSyncPanel />
       {inventoryError && (
         <p className="mb-4 text-sm text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
           Database table missing? Run migration{" "}

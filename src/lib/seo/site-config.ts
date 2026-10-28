@@ -21,11 +21,11 @@ export function getPublicSiteConfig(): PublicSiteConfig {
   if (isWnluxe) {
     return {
       brandId: "wnluxe",
-      name: "WN Luxe",
-      legalName: "WN Luxe Phuket",
-      tagline: "Luxury pool villas in Pasak and Cherng Talay",
+      name: "WN LUXE Estates",
+      legalName: "WN LUXE Estates",
+      tagline: "Phuket Real Estate",
       description:
-        "WN Luxe helps buyers and renters find luxury pool villas near Bang Tao and Laguna in Phuket, with clear advice in English, Thai, and Russian.",
+        "Luxury villas and homes for sale and rent in Phuket, with local guidance in English, Thai, and Russian.",
       url,
       logoLetter: "W",
       contactEmail: "hello@wnluxe.com",

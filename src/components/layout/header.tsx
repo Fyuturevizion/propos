@@ -18,7 +18,19 @@ export function Header() {
           <SiteBrand />
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-5 md:flex">
+          <Link
+            href="/properties?listingType=sale"
+            className="text-sm font-medium hover:text-emerald-600"
+          >
+            {tProps("listing.sale")}
+          </Link>
+          <Link
+            href="/properties?listingType=rent"
+            className="text-sm font-medium hover:text-emerald-600"
+          >
+            {tProps("listing.rent")}
+          </Link>
           <Link href="/properties" className="text-sm font-medium hover:text-emerald-600">
             {tProps("title")}
           </Link>
@@ -36,7 +48,25 @@ export function Header() {
       {mobileOpen && (
         <div className="border-t px-6 py-4 md:hidden">
           <nav className="flex flex-col gap-3">
-            <Link href="/properties" className="text-sm font-medium" onClick={() => setMobileOpen(false)}>
+            <Link
+              href="/properties?listingType=sale"
+              className="text-sm font-medium"
+              onClick={() => setMobileOpen(false)}
+            >
+              {tProps("listing.sale")}
+            </Link>
+            <Link
+              href="/properties?listingType=rent"
+              className="text-sm font-medium"
+              onClick={() => setMobileOpen(false)}
+            >
+              {tProps("listing.rent")}
+            </Link>
+            <Link
+              href="/properties"
+              className="text-sm font-medium"
+              onClick={() => setMobileOpen(false)}
+            >
               {tProps("title")}
             </Link>
             <Link href="/contact" className="text-sm font-medium" onClick={() => setMobileOpen(false)}>
