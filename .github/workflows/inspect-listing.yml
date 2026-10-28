@@ -1,0 +1,34 @@
+name: Inspect listing data
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Property ref (e.g. J100)
+        required: true
+        default: J100
+  push:
+    branches: [main]
+
+jobs:
+  inspect:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.head_commit.message, '[inspect-listing')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      INPUT_REF: ${{ github.event.inputs.ref }}
+      COMMIT_MSG: ${{ github.event.head_commit.message }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: |
+          REF="$INPUT_REF"
+          if [ -z "$REF" ] && [[ "$COMMIT_MSG" =~ \[inspect-listing\ ref=([A-Za-z0-9-]+)\] ]]; then REF="${BASH_REMATCH[1]}"; fi
+          node scripts/inspect-listing.mjs "${REF:-J100}"

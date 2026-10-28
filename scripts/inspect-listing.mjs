@@ -27,7 +27,10 @@ function redact(row) {
 
 const inv = await get(`inventory_listings?property_ref=eq.${ref}&select=*`);
 const slug = ref.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-const props = await get(`properties?or=(slug.eq.${slug},property_ref.eq.${ref})&select=*`);
+const propertyId = inv[0]?.property_id;
+const props = await get(
+  propertyId ? `properties?or=(slug.eq.${slug},id.eq.${propertyId})&select=*` : `properties?slug=eq.${slug}&select=*`,
+);
 console.log("=== inventory_listings");
 console.log(JSON.stringify(inv.map(redact), null, 2));
 console.log("=== properties");
