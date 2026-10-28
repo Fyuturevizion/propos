@@ -1,6 +1,14 @@
 # Google Drive listing photos
 
+Master spreadsheet (embedded Photo links):
+
+https://docs.google.com/spreadsheets/d/1tL7C6X7KGcDnVSIrqrmMT0KXzxmzq0q6kgmoqaSoSPg/edit
+
 WN Luxe stores Drive file references as `gdrive:<fileId>` in `properties.images` and `inventory_listings.gallery_files`. The site serves them through `/api/cdn/image`.
+
+## Live sheet sync
+
+**Dashboard → Listings** (or Inventory) → **Sync Sales** / **Rent-Phuket** calls `/api/sync/wnluxe-sheet`. It reads each Photo cell’s **hyperlink** (not just visible text), upserts **inventory_listings**, and updates public **properties** with resolved images.
 
 ## OAuth (recommended for private folders)
 

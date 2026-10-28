@@ -1,10 +1,16 @@
-import { fetchSheetValues } from "@/lib/google/sheets";
+import { fetchSheetRangeCells } from "@/lib/google/sheets";
 import { resolvePhotoCellToImageRefs } from "@/lib/google/drive-photos";
 import { supabase } from "@/lib/db/supabase-server";
+import {
+  photoUrlFromSheetCell,
+  slugFromPropertyRef,
+} from "@/lib/inventory/spreadsheet";
 
 export const WNLUXE_PROPERTY_SHEET_ID =
   process.env.WNLUXE_SHEET_ID ??
   "1tL7C6X7KGcDnVSIrqrmMT0KXzxmzq0q6kgmoqaSoSPg";
+
+export const WNLUXE_PROPERTY_SHEET_URL = `https://docs.google.com/spreadsheets/d/${WNLUXE_PROPERTY_SHEET_ID}/edit`;
 
 export type SheetTabConfig = {
   tabName: string;
@@ -62,17 +68,14 @@ export const WNLUXE_SHEET_TABS: SheetTabConfig[] = [
 ];
 
 function colIndex(headerRow: string[], name: string): number {
-  const i = headerRow.findIndex(
-    (h) => h.trim().toLowerCase() === name.trim().toLowerCase()
+  const key = name.trim().toLowerCase();
+  const exact = headerRow.findIndex((h) => h.trim().toLowerCase() === key);
+  if (exact >= 0) return exact;
+  return headerRow.findIndex(
+    (h) =>
+      h.trim().toLowerCase().includes(key) ||
+      key.includes(h.trim().toLowerCase())
   );
-  return i;
-}
-
-function slugFromRef(ref: string): string {
-  return ref
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
 }
 
 function parsePriceThb(raw: string | undefined): string | null {
@@ -110,6 +113,49 @@ export type SyncRowResult = {
   note?: string;
 };
 
+async function upsertInventoryFromSheetRow(options: {
+  ref: string;
+  listingType: "sale" | "rent";
+  location: string;
+  project: string;
+  photoUrl: string | null;
+  priceRaw?: string;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  rawRow: Record<string, string>;
+}): Promise<void> {
+  const now = new Date().toISOString();
+  const record = {
+    property_ref: options.ref,
+    listing_type: options.listingType,
+    location: options.location || null,
+    project_name: options.project || null,
+    photo_url: options.photoUrl,
+    price_raw: options.priceRaw ?? null,
+    price_thb: parsePriceThb(options.priceRaw),
+    bedrooms: options.bedrooms,
+    bathrooms: options.bathrooms,
+    source_workbook: WNLUXE_PROPERTY_SHEET_URL,
+    raw_row: options.rawRow,
+    updated_at: now,
+  };
+
+  const { data: existing } = await supabase
+    .from("inventory_listings")
+    .select("id")
+    .eq("property_ref", options.ref)
+    .eq("listing_type", options.listingType)
+    .maybeSingle();
+
+  if (existing?.id) {
+    await supabase.from("inventory_listings").update(record).eq("id", existing.id);
+  } else {
+    await supabase
+      .from("inventory_listings")
+      .insert({ ...record, created_at: now });
+  }
+}
+
 export async function syncSheetTab(options: {
   tab: SheetTabConfig;
   photosRootFolderId?: string;
@@ -117,13 +163,13 @@ export async function syncSheetTab(options: {
   onlyRef?: string;
 }): Promise<SyncRowResult[]> {
   const { tab, photosRootFolderId, limit, onlyRef } = options;
-  const rows = await fetchSheetValues(
+  const grid = await fetchSheetRangeCells(
     WNLUXE_PROPERTY_SHEET_ID,
     `'${tab.tabName}'!A1:Z500`
   );
-  if (rows.length < 2) return [];
+  if (grid.length < 2) return [];
 
-  const header = rows[0];
+  const header = grid[0].map((c) => c.text);
   const idx = {
     ref: colIndex(header, tab.headers.ref),
     location: colIndex(header, tab.headers.location),
@@ -141,32 +187,84 @@ export async function syncSheetTab(options: {
   const results: SyncRowResult[] = [];
   let processed = 0;
 
-  for (let r = 1; r < rows.length; r++) {
-    const row = rows[r];
-    const ref = (row[idx.ref] ?? "").trim();
+  for (let r = 1; r < grid.length; r++) {
+    const row = grid[r];
+    const ref = (row[idx.ref]?.text ?? "").trim();
     if (!ref) continue;
     if (onlyRef && ref.toLowerCase() !== onlyRef.toLowerCase()) continue;
 
-    const project = (row[idx.project] ?? "").trim();
-    const location = idx.location >= 0 ? (row[idx.location] ?? "").trim() : "";
-    const photoCell = idx.photo >= 0 ? (row[idx.photo] ?? "").trim() : "";
+    const project = (row[idx.project]?.text ?? "").trim();
+    const location =
+      idx.location >= 0 ? (row[idx.location]?.text ?? "").trim() : "";
+    const photoCell = idx.photo >= 0 ? row[idx.photo] : undefined;
+    const photoText = photoCell?.text ?? "";
+    const photoUrl = photoUrlFromSheetCell(
+      photoText,
+      photoCell?.hyperlink ?? null
+    );
 
-    const slug = slugFromRef(ref);
+    const slug = slugFromPropertyRef(ref);
     if (!slug) {
       results.push({ ref, slug: "", action: "skipped", imageCount: 0, note: "Invalid ref" });
       continue;
     }
 
-    const { imageRefs, folderId } = await resolvePhotoCellToImageRefs(photoCell, {
-      photosRootFolderId,
-      maxImages: 20,
+    const resolveInput = photoUrl ?? photoText;
+    const { imageRefs, folderId } = await resolvePhotoCellToImageRefs(
+      resolveInput,
+      {
+        photosRootFolderId,
+        maxImages: 20,
+      }
+    );
+
+    const priceRaw = idx.price >= 0 ? row[idx.price]?.text : undefined;
+    const { bedrooms, bathrooms } = parseBedsBaths(
+      idx.beds >= 0 ? row[idx.beds]?.text : undefined,
+      idx.baths >= 0 ? row[idx.baths]?.text : undefined
+    );
+
+    const rawRow: Record<string, string> = {};
+    header.forEach((h, i) => {
+      if (!h) return;
+      rawRow[h] = row[i]?.text ?? "";
     });
 
-    const priceRaw = idx.price >= 0 ? row[idx.price] : undefined;
-    const { bedrooms, bathrooms } = parseBedsBaths(
-      idx.beds >= 0 ? row[idx.beds] : undefined,
-      idx.baths >= 0 ? row[idx.baths] : undefined
-    );
+    try {
+      await upsertInventoryFromSheetRow({
+        ref,
+        listingType: tab.listingType,
+        location,
+        project,
+        photoUrl,
+        priceRaw,
+        bedrooms,
+        bathrooms,
+        rawRow,
+      });
+      if (imageRefs.length) {
+        await supabase
+          .from("inventory_listings")
+          .update({
+            gallery_files: imageRefs,
+            photos_synced_at: new Date().toISOString(),
+          })
+          .eq("property_ref", ref)
+          .eq("listing_type", tab.listingType);
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "inventory upsert failed";
+      results.push({
+        ref,
+        slug,
+        action: "skipped",
+        imageCount: imageRefs.length,
+        note: msg,
+      });
+      processed++;
+      if (limit && processed >= limit) break;
+      continue;
+    }
 
     const payload = {
       slug,
@@ -208,7 +306,11 @@ export async function syncSheetTab(options: {
           slug,
           action: "updated",
           imageCount: imageRefs.length,
-          note: folderId ? `folder ${folderId}` : photoCell || "no photo",
+          note: folderId
+            ? `folder ${folderId}`
+            : photoUrl
+              ? "hyperlink/url"
+              : photoText || "no photo",
         });
       }
     } else {
@@ -227,7 +329,11 @@ export async function syncSheetTab(options: {
           slug,
           action: "created",
           imageCount: imageRefs.length,
-          note: folderId ? `folder ${folderId}` : photoCell || "no photo",
+          note: folderId
+            ? `folder ${folderId}`
+            : photoUrl
+              ? "hyperlink/url"
+              : photoText || "no photo",
         });
       }
     }
