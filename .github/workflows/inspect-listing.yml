@@ -21,6 +21,9 @@ jobs:
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
       INPUT_REF: ${{ github.event.inputs.ref }}
       COMMIT_MSG: ${{ github.event.head_commit.message }}
     steps:
@@ -30,5 +33,8 @@ jobs:
           node-version: "22"
       - run: |
           REF="$INPUT_REF"
-          if [ -z "$REF" ] && [[ "$COMMIT_MSG" =~ \[inspect-listing\ ref=([A-Za-z0-9-]+)\] ]]; then REF="${BASH_REMATCH[1]}"; fi
+          if [ -z "$REF" ] && [[ "$COMMIT_MSG" =~ \[inspect-listing\ ref=([A-Za-z0-9-]+) ]]; then REF="${BASH_REMATCH[1]}"; fi
+          FOLDER=""
+          if [[ "$COMMIT_MSG" =~ folder=([A-Za-z0-9_-]+) ]]; then FOLDER="${BASH_REMATCH[1]}"; fi
           node scripts/inspect-listing.mjs "${REF:-J100}"
+          node scripts/inspect-sheet-row.mjs "${REF:-J100}" "$FOLDER"
