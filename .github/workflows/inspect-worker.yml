@@ -35,13 +35,17 @@ jobs:
           mkdir -p out
           curl -sS -H "$AUTH" "${BASE}/versions/${VERSION}" > out/version.json
           jq '{id: .result.id, metadata: .result.metadata, main_module: .result.resources.script.etag, script: .result.resources.script, runtime: .result.resources.script_runtime, bindings: [.result.resources.bindings[]? | {name, type}]}' out/version.json || head -c 2000 out/version.json
-          curl -sS -H "$AUTH" -D out/headers.txt "${BASE}/content/v2?version=${VERSION}" -o out/content.bin
-          cat out/headers.txt
-          ls -la out
-          file out/content.bin || true
-          strings out/content.bin | grep -Eo '(/Users|/home)/[A-Za-z0-9._/-]{3,120}' | sort | uniq -c | sort -rn | head -40 || true
-          strings out/content.bin | grep -Eo '"name":"[a-z0-9@/._-]{2,60}","version":"[0-9.]+"' | sort -u | head -20 || true
-          strings out/content.bin | grep -Eio 'github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+' | sort | uniq -c | sort -rn | head -20 || true
+          # Versioned module content (Workers API); content/v2 always returns the latest upload.
+          WBASE="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/workers/wnluxe/versions/${VERSION}"
+          curl -sS -H "$AUTH" "${WBASE}?include=modules" > out/modules.json
+          jq '{success, errors, modules: [.result.modules[]? | {name, content_type, bytes: (.content_base64 | length)}]}' out/modules.json || head -c 1500 out/modules.json
+          mkdir -p out/modules
+          jq -r '.result.modules[]? | @base64' out/modules.json | while read -r row; do
+            name=$(echo "$row" | base64 -d | jq -r .name)
+            echo "$row" | base64 -d | jq -r .content_base64 | base64 -d > "out/modules/$(echo "$name" | tr '/' '_')"
+          done
+          ls -la out/modules
+          grep -c 'Property Listings sheet' out/modules/* || true
       - uses: actions/upload-artifact@v4
         with:
           name: worker-version
