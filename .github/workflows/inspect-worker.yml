@@ -35,6 +35,7 @@ jobs:
           mkdir -p out
           curl -sS -H "$AUTH" "${BASE}/versions/${VERSION}" > out/version.json
           jq '{id: .result.id, metadata: .result.metadata, main_module: .result.resources.script.etag, script: .result.resources.script, runtime: .result.resources.script_runtime, bindings: [.result.resources.bindings[]? | {name, type}]}' out/version.json || head -c 2000 out/version.json
+          if [[ "$COMMIT_MSG" =~ bindings-only ]]; then exit 0; fi
           # Versioned module content (Workers API); content/v2 always returns the latest upload.
           WBASE="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/workers/wnluxe/versions/${VERSION}"
           curl -sS -H "$AUTH" "${WBASE}?include=modules" > out/modules.json

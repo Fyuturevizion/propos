@@ -1,0 +1,41 @@
+name: Sync inventory galleries (Drive → CDN)
+
+on:
+  workflow_dispatch:
+    inputs:
+      refs:
+        description: Space-separated property refs (e.g. J100). Empty = all rows with a Drive link.
+        required: false
+        default: ""
+  push:
+    branches: [main]
+
+jobs:
+  sync:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.head_commit.message, '[sync-galleries')
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+      INPUT_REFS: ${{ github.event.inputs.refs }}
+      COMMIT_MSG: ${{ github.event.head_commit.message }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Sync
+        run: |
+          REFS="$INPUT_REFS"
+          if [ -z "$REFS" ] && [[ "$COMMIT_MSG" =~ \[sync-galleries\ refs=([A-Za-z0-9,-]+)\] ]]; then
+            REFS="${BASH_REMATCH[1]//,/ }"
+          fi
+          node scripts/sync-inventory-galleries.mjs $REFS
