@@ -32,11 +32,21 @@ jobs:
           cache: npm
       - run: npm ci
 
+      # wrangler versions list only returns the 10 newest; the API paginates further back.
       - name: Show Worker versions and deployments
         run: |
-          npx wrangler versions list --name wnluxe --json > versions.json
-          jq -r '.[] | "\(.metadata.created_on)  \(.id)  source=\(.metadata.source // "")  msg=\(.annotations["workers/message"] // "")"' versions.json | tail -40
-          npx wrangler deployments list --name wnluxe | tail -40
+          API="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/scripts/wnluxe/versions"
+          echo '[]' > versions.json
+          for page in 1 2 3 4 5; do
+            curl -sfS -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "${API}?page=${page}&per_page=50" > page.json || break
+            n=$(jq '.result.items | length' page.json)
+            jq -s '.[0] + .[1].result.items' versions.json page.json > merged.json && mv merged.json versions.json
+            [ "$n" -lt 50 ] && break
+          done
+          echo "Total versions: $(jq length versions.json)"
+          jq -r 'sort_by(.metadata.created_on) | .[] | "\(.metadata.created_on)  \(.id)  source=\(.metadata.source // "")  author=\(.metadata.author_email // "")  msg=\(.annotations["workers/message"] // "")"' versions.json | tail -60
+          npx wrangler deployments list --name wnluxe | tail -20
 
       - name: Roll back wnluxe Worker
         run: |
