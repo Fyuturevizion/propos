@@ -17,7 +17,7 @@ for (const name of ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REFRESH_
   const v = raw.trim();
   const shape =
     name === "GOOGLE_CLIENT_ID"
-      ? `project=${v.split("-")[0]} endsWithGoogleDomain=${v.endsWith(".apps.googleusercontent.com")}`
+      ? `project=${v.split("-")[0]} clientPrefix=${v.split("-")[1]?.slice(0, 6)} endsWithGoogleDomain=${v.endsWith(".apps.googleusercontent.com")}`
       : name === "GOOGLE_CLIENT_SECRET"
         ? `startsWithGOCSPX=${v.startsWith("GOCSPX-")}`
         : `startsWith1slashslash=${v.startsWith("1//")}`;
