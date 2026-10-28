@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { LoginForm } from "@/components/auth/login-form";
 import { getPublicSiteConfig } from "@/lib/seo/site-config";
+import { wnluxeTheme } from "@/lib/brands/wnluxe-theme";
 
 export default async function LoginPage({
   searchParams,
@@ -10,6 +11,7 @@ export default async function LoginPage({
 }) {
   const { error, tg } = await searchParams;
   const site = getPublicSiteConfig();
+  const isWnluxe = site.brandId === "wnluxe";
 
   try {
     const cookieStore = await cookies();
@@ -64,7 +66,11 @@ export default async function LoginPage({
           display: flex;
           align-items: center;
           justify-content: center;
-          background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 50%, #ecfdf5 100%);
+          background: ${
+            isWnluxe
+              ? `linear-gradient(160deg, ${wnluxeTheme.cream} 0%, #eef1f5 45%, ${wnluxeTheme.goldMuted}22 100%)`
+              : "linear-gradient(135deg, #f0fdf4 0%, #f8fafc 50%, #ecfdf5 100%)"
+          };
           padding: 20px;
           overscroll-behavior: none;
           -webkit-overflow-scrolling: touch;
@@ -82,14 +88,16 @@ export default async function LoginPage({
           height: 64px;
           margin: 0 auto 16px;
           border-radius: 18px;
-          background: #059669;
-          color: white;
+          background: ${isWnluxe ? wnluxeTheme.navy : "#059669"};
+          color: ${isWnluxe ? wnluxeTheme.gold : "white"};
           font-size: 28px;
           font-weight: bold;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 12px 32px rgba(5,150,105,0.3);
+          box-shadow: 0 12px 32px ${
+            isWnluxe ? "rgba(7,21,35,0.35)" : "rgba(5,150,105,0.3)"
+          };
         }
         .login-title {
           font-size: 26px;

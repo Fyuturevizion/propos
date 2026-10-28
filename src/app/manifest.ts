@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
 import { getPublicSiteConfig } from "@/lib/seo/site-config";
+import { wnluxeTheme } from "@/lib/brands/wnluxe-theme";
 
 export default function manifest(): MetadataRoute.Manifest {
   const site = getPublicSiteConfig();
   const shortName =
     site.brandId === "wnluxe" ? "WN Luxe" : "TTT Props";
+  const isWnluxe = site.brandId === "wnluxe";
 
   return {
     name: site.name,
@@ -12,8 +14,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: site.description,
     start_url: "/en",
     display: "standalone",
-    background_color: "#ffffff",
-    theme_color: "#059669",
+    background_color: isWnluxe ? wnluxeTheme.cream : "#ffffff",
+    theme_color: isWnluxe ? wnluxeTheme.navy : "#059669",
     orientation: "portrait-primary",
     icons: [
       {

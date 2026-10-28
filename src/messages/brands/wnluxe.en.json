@@ -1,4 +1,11 @@
 {
+  "home": {
+    "hero": {
+      "title": "Luxury homes & pool villas in Phuket",
+      "subtitle": "Curated estates in Bang Tao, Laguna, and Cherng Talay — discreet guidance in English, Thai, and Russian."
+    },
+    "cta": "View collection"
+  },
   "properties": {
     "subtitle": "Browse our curated selection of Phuket real estate"
   },

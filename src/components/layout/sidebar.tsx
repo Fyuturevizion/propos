@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { setChatOpen } from "@/components/chat/chat-widget";
+import { isWnluxeBrand } from "@/lib/brands/is-wnluxe";
 
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Overview", exact: true },
@@ -44,6 +45,9 @@ const mobileTabItems = [
 export function DashboardSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const isWnluxe = isWnluxeBrand();
+  const logoLetter = isWnluxe ? "W" : "T";
+  const brandTitle = isWnluxe ? "WN LUXE Estates" : "TTT Properties";
   const [logoTaps, setLogoTaps] = useState(0);
   const [lastLogoTap, setLastLogoTap] = useState(0);
 
@@ -90,13 +94,13 @@ export function DashboardSidebar() {
           onClick={handleLogoTap}
           className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:shadow-lg hover:shadow-primary/25 active:scale-95 transition-all duration-200"
         >
-          T
+          {logoLetter}
           {logoTaps > 0 && logoTaps < 5 && (
             <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
           )}
         </button>
         <div>
-          <span className="text-sm font-bold text-sidebar-foreground tracking-tight">TTT Properties</span>
+          <span className="text-sm font-bold text-sidebar-foreground tracking-tight">{brandTitle}</span>
           <p className="text-[10px] text-sidebar-foreground/50 font-medium uppercase tracking-wider">Dashboard</p>
         </div>
       </div>

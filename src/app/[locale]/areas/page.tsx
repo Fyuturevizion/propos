@@ -75,21 +75,21 @@ export default async function AreasIndexPage({ params }: Props) {
             <li key={slug}>
               <Link
                 href={`/areas/${slug}`}
-                className="group flex h-full flex-col rounded-xl border p-6 transition hover:border-emerald-300 hover:bg-emerald-50/50"
+                className="group flex h-full flex-col rounded-xl border p-6 transition hover:border-accent/40 hover:bg-secondary/50"
               >
                 <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                  <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
                   <div>
-                    <h2 className="text-lg font-semibold group-hover:text-emerald-800">
+                    <h2 className="text-lg font-semibold group-hover:text-primary">
                       {name}
                     </h2>
-                    <p className="text-sm text-emerald-700">{tagline}</p>
+                    <p className="text-sm text-primary/80">{tagline}</p>
                   </div>
                 </div>
                 <p className="mt-3 flex-1 text-sm text-muted-foreground line-clamp-3">
                   {blurb}
                 </p>
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-emerald-700">
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
                   {t("readGuide")}
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
                 </span>
