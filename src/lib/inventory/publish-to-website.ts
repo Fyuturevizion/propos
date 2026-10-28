@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/db/supabase-server";
 import { syncInventoryGallery } from "./sync-gallery";
 import { slugFromPropertyRef } from "./spreadsheet";
+import { loadInventoryByRef } from "./load-listing";
 
 export type PublishResult = {
   propertyRef: string;
@@ -17,13 +18,7 @@ export async function publishInventoryToWebsite(
 ): Promise<PublishResult> {
   const syncPhotosFirst = options?.syncPhotosFirst ?? true;
 
-  const { data: listing, error } = await supabase
-    .from("inventory_listings")
-    .select("*")
-    .eq("property_ref", propertyRef)
-    .maybeSingle();
-
-  if (error) throw new Error(error.message);
+  const listing = await loadInventoryByRef(propertyRef);
   if (!listing) throw new Error(`Inventory listing not found: ${propertyRef}`);
 
   let gallery = (listing.gallery_files as string[] | null) ?? [];
@@ -128,13 +123,7 @@ export async function publishInventoryToWebsite(
 export async function unpublishInventoryFromWebsite(
   propertyRef: string
 ): Promise<void> {
-  const { data: listing, error } = await supabase
-    .from("inventory_listings")
-    .select("id, published_property_id")
-    .eq("property_ref", propertyRef)
-    .maybeSingle();
-
-  if (error) throw new Error(error.message);
+  const listing = await loadInventoryByRef(propertyRef);
   if (!listing) throw new Error(`Inventory listing not found: ${propertyRef}`);
 
   if (listing.published_property_id) {

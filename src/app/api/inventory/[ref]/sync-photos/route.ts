@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { syncInventoryGallery } from "@/lib/inventory/sync-gallery";
 import { supabase } from "@/lib/db/supabase-server";
+import { loadInventoryByRef } from "@/lib/inventory/load-listing";
 
 async function isDashboardAuthed(): Promise<boolean> {
   const cookieStore = await cookies();
@@ -29,12 +30,7 @@ export async function POST(_req: NextRequest, context: RouteContext) {
 
   try {
     const result = await syncInventoryGallery(propertyRef);
-
-    const { data: listing } = await supabase
-      .from("inventory_listings")
-      .select("published_property_id, is_published")
-      .eq("property_ref", propertyRef)
-      .maybeSingle();
+    const listing = await loadInventoryByRef(propertyRef);
 
     if (listing?.is_published && listing.published_property_id) {
       await supabase

@@ -2,6 +2,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase as defaultSupabase } from "@/lib/db/supabase-server";
 import { resolvePhotoCellToImageRefs } from "@/lib/google/drive-photos";
 import { extractGoogleDriveFolderId } from "@/lib/images/google-drive";
+import { getGoogleAccessTokenResult } from "@/lib/google/access-token";
+import { loadInventoryByRef } from "./load-listing";
 
 export type SyncGalleryResult = {
   propertyRef: string;
@@ -28,14 +30,13 @@ export async function syncInventoryGallery(
   const client = options?.supabase ?? defaultSupabase;
   const maxFiles = options?.maxFiles ?? 24;
 
-  const { data: row, error } = await client
-    .from("inventory_listings")
-    .select("id, property_ref, photo_url, gallery_files")
-    .eq("property_ref", propertyRef)
-    .maybeSingle();
-
-  if (error) throw new Error(error.message);
+  const row = await loadInventoryByRef(propertyRef, { supabase: client });
   if (!row) throw new Error(`Inventory listing not found: ${propertyRef}`);
+
+  const tokenCheck = await getGoogleAccessTokenResult();
+  if (!tokenCheck.ok && row.photo_url) {
+    throw new Error(tokenCheck.reason);
+  }
 
   const photoCell = (row.photo_url as string | null)?.trim() ?? "";
   if (!photoCell) {
@@ -47,10 +48,19 @@ export async function syncInventoryGallery(
     };
   }
 
-  const { imageRefs, folderId } = await resolvePhotoCellToImageRefs(photoCell, {
-    photosRootFolderId: photosRootFromEnv(),
-    maxImages: maxFiles,
-  });
+  let imageRefs: string[] = [];
+  let folderId: string | null = null;
+  try {
+    const resolved = await resolvePhotoCellToImageRefs(photoCell, {
+      photosRootFolderId: photosRootFromEnv(),
+      maxImages: maxFiles,
+    });
+    imageRefs = resolved.imageRefs;
+    folderId = resolved.folderId;
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Drive folder sync failed";
+    throw new Error(`${msg} (ref ${propertyRef})`);
+  }
 
   const folderFromUrl = extractGoogleDriveFolderId(photoCell);
   const resolvedFolderId = folderId ?? folderFromUrl;
