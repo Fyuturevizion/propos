@@ -60,8 +60,9 @@ function parseDriveFolderId(url) {
 }
 
 let cachedToken = null;
+let tokenExpiresAt = 0;
 async function googleToken() {
-  if (cachedToken) return cachedToken;
+  if (cachedToken && Date.now() < tokenExpiresAt) return cachedToken;
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -76,8 +77,10 @@ async function googleToken() {
   if (!res.ok || !json.access_token) {
     throw new Error(`Google token error (${res.status}): ${json.error} ${json.error_description ?? ""}`);
   }
-  console.log(`Google token scopes: ${json.scope}`);
+  if (!cachedToken) console.log(`Google token scopes: ${json.scope}`);
   cachedToken = json.access_token;
+  // Refresh five minutes early; access tokens last ~1h and a full sync runs longer.
+  tokenExpiresAt = Date.now() + ((json.expires_in ?? 3600) - 300) * 1000;
   return cachedToken;
 }
 
