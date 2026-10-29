@@ -126,12 +126,22 @@ async function copyToStorage(propertyRef, file) {
           ? "avif"
           : "jpg";
   const storagePath = `inventory/${propertyRef}/${file.id}.${ext}`;
-  const up = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${storagePath}`, {
-    method: "POST",
-    headers: { ...sbHeaders, "Content-Type": mimeType, "x-upsert": "true" },
-    body: Buffer.from(await res.arrayBuffer()),
-  });
-  if (!up.ok) throw new Error(`Storage upload failed (${up.status}): ${(await up.text()).slice(0, 200)}`);
+  const body = Buffer.from(await res.arrayBuffer());
+  let up;
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    up = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${storagePath}`, {
+      method: "POST",
+      headers: { ...sbHeaders, "Content-Type": mimeType, "x-upsert": "true" },
+      body,
+    });
+    if (up.ok || up.status < 500 || attempt === 4) break;
+    await new Promise((r) => setTimeout(r, 2000 * 2 ** attempt));
+  }
+  if (!up.ok) {
+    throw new Error(
+      `Storage upload failed (${up.status}, ${(body.length / 1e6).toFixed(1)} MB ${file.name}): ${(await up.text()).slice(0, 120)}`,
+    );
+  }
   return {
     storagePath,
     cdnUrl: `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${storagePath}`,
