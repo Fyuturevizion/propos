@@ -98,6 +98,8 @@
     "success": "Спасибо! Мы свяжемся с вами в течение 24 часов.",
     "channels": {
       "title": "Другие способы связи",
+      "formOnlyHint": "Напишите через форму слева — мы отвечаем оттуда (публичного ящика пока нет).",
+      "quickResponse": "Быстрый ответ",
       "whatsapp": "WhatsApp",
       "line": "LINE",
       "telegram": "Telegram",

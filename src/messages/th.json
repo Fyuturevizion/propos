@@ -98,6 +98,8 @@
     "success": "ขอบคุณครับ! เราจะติดต่อกลับภายใน 24 ชั่วโมง",
     "channels": {
       "title": "ช่องทางติดต่ออื่น",
+      "formOnlyHint": "กรอกแบบฟอร์มทางซ้าย — เราตอบจากทางนั้น (ยังไม่มีอีเมลสาธารณะ)",
+      "quickResponse": "ตอบเร็ว",
       "whatsapp": "WhatsApp",
       "line": "LINE",
       "telegram": "Telegram",

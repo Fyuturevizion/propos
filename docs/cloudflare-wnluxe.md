@@ -28,6 +28,13 @@ Authenticate **Cloudflare-builds** under Cursor → Integrations if build lists 
 - `NEXT_PUBLIC_APP_URL=https://wnluxe.com`
 - Supabase keys, Google OAuth, `WNLUXE_SHEET_ID`, `WNLUXE_DRIVE_PHOTOS_ROOT_ID`, etc.
 
+**Optional (marketing / contact page):** until you have a working public inbox, omit these — the site shows only the enquiry form plus whatever you configure:
+
+- `NEXT_PUBLIC_CONTACT_EMAIL` — shown as `mailto:` and in `llms.txt` / JSON-LD when set
+- `NEXT_PUBLIC_WHATSAPP_E164` — digits for `wa.me` (e.g. `66812345678`)
+- `NEXT_PUBLIC_LINE_URL`, `NEXT_PUBLIC_LINE_HANDLE` — LINE add-friend or chat URL and display handle
+- `NEXT_PUBLIC_TELEGRAM_URL`, `NEXT_PUBLIC_TELEGRAM_HANDLE` — Telegram deep link and @handle
+
 **Build-time** (Worker → Settings → Builds → Build variables, or Builds API):
 
 - Same `NEXT_PUBLIC_*` values (Next.js bakes them at build)

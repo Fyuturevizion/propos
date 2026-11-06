@@ -21,7 +21,7 @@ WN Luxe helps buyers and renters find luxury pool villas near Bang Tao and Lagun
 WN Luxe is a Phuket real estate brand focused on luxury pool villas near Bang Tao, Laguna, Pasak, and Cherng Talay. We publish listing details, location context, and viewing enquiries. We do not provide legal or tax advice in automated answers.
 
 ## Contact
-- Email: hello@wnluxe.com
+- Enquiry form: https://wnluxe.com/en/contact (set NEXT_PUBLIC_CONTACT_EMAIL when a public inbox exists)
 
 ## Crawling notes
 - Public marketing pages are intended for search and citation (Content-Signal: search=yes, ai-input=yes, ai-train=no).

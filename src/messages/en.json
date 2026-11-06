@@ -98,6 +98,8 @@
     "success": "Thank you! We'll be in touch within 24 hours.",
     "channels": {
       "title": "Other Ways to Reach Us",
+      "formOnlyHint": "Use the form on the left — we respond from there (no public inbox yet).",
+      "quickResponse": "Quick response",
       "whatsapp": "WhatsApp",
       "line": "LINE",
       "telegram": "Telegram",

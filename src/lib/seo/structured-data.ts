@@ -8,7 +8,7 @@ export function organizationJsonLd() {
     name: site.legalName,
     url: site.url,
     description: site.description,
-    email: site.contactEmail,
+    ...(site.contactEmail ? { email: site.contactEmail } : {}),
     areaServed: {
       "@type": "AdministrativeArea",
       name: "Phuket, Thailand",

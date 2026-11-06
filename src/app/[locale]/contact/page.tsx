@@ -2,13 +2,15 @@ import { getTranslations } from "next-intl/server";
 import { Mail, MessageCircle } from "lucide-react";
 import { ContactForm } from "@/components/contact/contact-form";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { getPublicSiteConfig } from "@/lib/seo/site-config";
+import {
+  getPublicSiteConfig,
+  getResolvedContactChannels,
+} from "@/lib/seo/site-config";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
-  const site = getPublicSiteConfig();
   const t = await getTranslations({ locale, namespace: "contact" });
   return buildPageMetadata({
     locale,
@@ -20,6 +22,15 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function ContactPage() {
   const t = await getTranslations("contact");
+  const site = getPublicSiteConfig();
+  const ch = getResolvedContactChannels(site);
+
+  const hasDirectChannel = Boolean(
+    ch.whatsappHref ||
+      ch.lineHref ||
+      ch.telegramHref ||
+      ch.emailAddress
+  );
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
@@ -33,53 +44,78 @@ export default async function ContactPage() {
 
         <div>
           <h2 className="text-xl font-semibold">{t("channels.title")}</h2>
+          {!hasDirectChannel ? (
+            <p className="mt-4 text-sm text-muted-foreground">
+              {t("channels.formOnlyHint")}
+            </p>
+          ) : null}
           <div className="mt-6 space-y-4">
-            <a
-              href="https://wa.me/66XXXXXXXXX"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 rounded-lg border p-4 transition hover:bg-muted/50"
-            >
-              <MessageCircle className="h-8 w-8 text-green-500" />
-              <div>
-                <div className="font-medium">{t("channels.whatsapp")}</div>
-                <div className="text-sm text-muted-foreground">Quick response</div>
-              </div>
-            </a>
-            <a
-              href="https://line.me/ti/p/@ttt-properties"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 rounded-lg border p-4 transition hover:bg-muted/50"
-            >
-              <MessageCircle className="h-8 w-8 text-green-600" />
-              <div>
-                <div className="font-medium">{t("channels.line")}</div>
-                <div className="text-sm text-muted-foreground">@ttt-properties</div>
-              </div>
-            </a>
-            <a
-              href="https://t.me/TTT_Properties_Bot"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 rounded-lg border p-4 transition hover:bg-muted/50"
-            >
-              <MessageCircle className="h-8 w-8 text-blue-500" />
-              <div>
-                <div className="font-medium">{t("channels.telegram")}</div>
-                <div className="text-sm text-muted-foreground">@TTT_Properties_Bot</div>
-              </div>
-            </a>
-            <a
-              href="mailto:hello@tttproperties.com"
-              className="flex items-center gap-4 rounded-lg border p-4 transition hover:bg-muted/50"
-            >
-              <Mail className="h-8 w-8 text-slate-600" />
-              <div>
-                <div className="font-medium">{t("channels.email")}</div>
-                <div className="text-sm text-muted-foreground">hello@tttproperties.com</div>
-              </div>
-            </a>
+            {ch.whatsappHref ? (
+              <a
+                href={ch.whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 rounded-lg border p-4 transition hover:bg-muted/50"
+              >
+                <MessageCircle className="h-8 w-8 text-green-500" />
+                <div>
+                  <div className="font-medium">{t("channels.whatsapp")}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {t("channels.quickResponse")}
+                  </div>
+                </div>
+              </a>
+            ) : null}
+            {ch.lineHref ? (
+              <a
+                href={ch.lineHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 rounded-lg border p-4 transition hover:bg-muted/50"
+              >
+                <MessageCircle className="h-8 w-8 text-green-600" />
+                <div>
+                  <div className="font-medium">{t("channels.line")}</div>
+                  {ch.lineSubtitle ? (
+                    <div className="text-sm text-muted-foreground">
+                      {ch.lineSubtitle}
+                    </div>
+                  ) : null}
+                </div>
+              </a>
+            ) : null}
+            {ch.telegramHref ? (
+              <a
+                href={ch.telegramHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 rounded-lg border p-4 transition hover:bg-muted/50"
+              >
+                <MessageCircle className="h-8 w-8 text-blue-500" />
+                <div>
+                  <div className="font-medium">{t("channels.telegram")}</div>
+                  {ch.telegramSubtitle ? (
+                    <div className="text-sm text-muted-foreground">
+                      {ch.telegramSubtitle}
+                    </div>
+                  ) : null}
+                </div>
+              </a>
+            ) : null}
+            {ch.emailAddress ? (
+              <a
+                href={`mailto:${ch.emailAddress}`}
+                className="flex items-center gap-4 rounded-lg border p-4 transition hover:bg-muted/50"
+              >
+                <Mail className="h-8 w-8 text-slate-600" />
+                <div>
+                  <div className="font-medium">{t("channels.email")}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {ch.emailAddress}
+                  </div>
+                </div>
+              </a>
+            ) : null}
           </div>
         </div>
       </div>
