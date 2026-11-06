@@ -1,5 +1,7 @@
 # Restoring the pre–GitHub-deploy app as `main`
 
+For a concise checklist (push live source → merge → delete `DEPLOY_FREEZE` → deploy), see **[WNLUXE-SOURCE-OF-TRUTH.md](./WNLUXE-SOURCE-OF-TRUTH.md)**.
+
 ## Current production state
 
 - **wnluxe.com** runs Worker version `8d4b9c02-9a1e-4ae4-8360-a9b5c791a3c2` (rolled back 2026-10-28 17:03 UTC).
